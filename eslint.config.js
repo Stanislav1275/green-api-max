@@ -121,7 +121,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['src/**/*.test.{ts,tsx}', 'src/shared/config/tests/**'],
+    files: ['src/**/*.test.{ts,tsx}', 'src/shared/lib/test/**'],
     rules: {
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/unbound-method': 'off',

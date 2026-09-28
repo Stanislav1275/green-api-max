@@ -1,4 +1,4 @@
-import { greenApiMock, TEST_CREDENTIALS } from '@/shared/config/tests'
+import { greenApiMock, TEST_CREDENTIALS } from '@/shared/lib/test'
 
 import { createGreenApi } from './green-api'
 

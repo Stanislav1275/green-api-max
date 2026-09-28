@@ -8,7 +8,7 @@ export default mergeConfig(
     test: {
       globals: true,
       environment: 'jsdom',
-      setupFiles: ['./src/shared/config/tests/setup.ts'],
+      setupFiles: ['./src/shared/lib/test/setup.ts'],
       include: ['src/**/*.test.{ts,tsx}'],
       restoreMocks: true,
       coverage: {
