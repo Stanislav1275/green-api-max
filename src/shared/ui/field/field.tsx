@@ -17,10 +17,12 @@ const Label = ({ className, ...props }: ComponentProps<typeof BaseField.Label>) 
   />
 )
 
-const Control = ({ className, ...props }: ComponentProps<typeof BaseField.Control>) => (
+/** Unstyled when used with `render` (e.g. a textarea brings its own styles). */
+const Control = ({ className, render, ...props }: ComponentProps<typeof BaseField.Control>) => (
   <BaseField.Control
     data-slot="field-control"
-    className={cn(inputClassName, className)}
+    render={render}
+    className={render ? className : cn(inputClassName, className)}
     {...props}
   />
 )
