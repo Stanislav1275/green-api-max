@@ -1,0 +1,5 @@
+export { deleteNotification } from './delete-notification'
+export { getSettings } from './get-settings'
+export { getStateInstance } from './get-state-instance'
+export { receiveNotification } from './receive-notification'
+export { sendMessage } from './send-message'
