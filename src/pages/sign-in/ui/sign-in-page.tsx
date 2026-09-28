@@ -34,7 +34,7 @@ export const SignInPage = () => {
 
         <div className="relative min-h-0 flex-1 overflow-y-auto px-3 md:px-0">
           <div className="mx-auto w-full md:max-w-[21rem] md:pt-10">
-            <Logo size={36} className="mx-auto mb-8 self-center max-md:hidden" />
+            <Logo size={36} className="mx-auto mb-8 flex w-fit max-md:hidden" />
             <h1
               id="sign-in-title"
               className="mt-4 mb-6 text-center text-xl leading-[25px] font-semibold text-balance md:mt-0"
