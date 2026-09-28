@@ -20,11 +20,7 @@ export const SignInPage = () => {
         aria-labelledby="sign-in-title"
         className="relative flex min-h-dvh flex-col md:h-[696px] md:min-h-0 md:w-[580px] md:overflow-hidden md:rounded-[1.75rem] md:border md:border-divider md:bg-background md:shadow-2xl"
       >
-        <div aria-hidden className="aurora max-md:hidden">
-          <span className="-top-24 -left-16 size-80 bg-brand-1" />
-          <span className="-top-28 left-1/3 size-72 bg-brand-2 [animation-delay:-5s]" />
-          <span className="-top-20 -right-20 size-80 bg-brand-3 [animation-delay:-10s]" />
-        </div>
+        <div aria-hidden className="card-glow max-md:hidden" />
 
         <header className="relative flex shrink-0 items-center justify-between p-2 md:px-4 md:pt-3.5 md:pb-0">
           <LanguageMenu />
@@ -34,7 +30,7 @@ export const SignInPage = () => {
 
         <div className="relative min-h-0 flex-1 overflow-y-auto px-3 md:px-0">
           <div className="mx-auto w-full md:max-w-[21rem] md:pt-10">
-            <Logo size={36} className="mx-auto mb-8 flex w-fit max-md:hidden" />
+            <Logo size={38} className="mx-auto mb-8 flex w-fit max-md:hidden" />
             <h1
               id="sign-in-title"
               className="mt-4 mb-6 text-center text-xl leading-[25px] font-semibold text-balance md:mt-0"
