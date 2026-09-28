@@ -66,7 +66,7 @@
   --bubble-out-foreground: #fff;
   --bubble-out-meta: #ffffffa3;
 
-  /* brand gradient: MAX dark outgoing bubble, reused for the logo and the sign-in "aurora" */
+  /* brand gradient: MAX dark outgoing bubble, reused for the logo */
   --brand-1: #4429cc;
   --brand-2: #2251e5;
   --brand-3: #08c;
@@ -266,39 +266,49 @@
   }
 }
 
-/* sign-in "aurora": blurred brand blobs drifting at the top of the card */
-@utility aurora {
+/*
+ * Sign-in card glow, same technique and values as web.max.ru: a card-wide circle with a
+ * cyan → blue → purple conic gradient sits mostly above the card, blurred and turning,
+ * so only its lower arc shimmers through the top 240px at 40% opacity.
+ */
+@utility card-glow {
   position: absolute;
   inset: 0 0 auto;
-  height: 22rem;
-  overflow: hidden;
+  height: 240px;
+  opacity: 0.4;
   pointer-events: none;
-  mask-image: linear-gradient(to bottom, #000 35%, transparent);
 
-  & > span {
+  &::after {
+    content: '';
     position: absolute;
-    border-radius: 9999px;
-    filter: blur(56px);
-    opacity: 0.85;
-    animation: aurora-drift 16s ease-in-out infinite alternate;
+    top: -175%;
+    left: 0;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 100%;
+    filter: blur(44px);
+    background: conic-gradient(
+      from 90deg,
+      #0cf 59.4deg,
+      #0026ff 122.4deg,
+      #a500c6 180deg,
+      #0cf 241.2deg,
+      #0026ff 298.8deg,
+      #a500c6 360deg
+    );
+    animation: card-glow-rotate 8s linear infinite;
   }
 }
 
-@keyframes aurora-drift {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(12%, 8%) scale(1.15);
-  }
-  100% {
-    transform: translate(-10%, 4%) scale(0.95);
+@keyframes card-glow-rotate {
+  to {
+    transform: rotate(360deg);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .logo-mark,
-  .aurora > span {
+  .card-glow::after {
     animation: none;
   }
 }
