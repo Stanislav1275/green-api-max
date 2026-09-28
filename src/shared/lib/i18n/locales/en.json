@@ -13,7 +13,7 @@
     "apiTokenInstancePlaceholder": "apiTokenInstance",
     "hint": "Instance credentials are in your GREEN-API console — tap “?” to see where",
     "submit": "Sign in",
-    "disclaimer": "By tapping “Sign in” you connect this browser to your instance. Credentials stay here and go straight to <strong>GREEN-API</strong>.",
+    "disclaimer": "Credentials stay in this browser and go straight to <strong>GREEN-API</strong>",
     "openConsole": "Open GREEN-API console",
     "notReady": "The instance is not ready",
     "problems": {

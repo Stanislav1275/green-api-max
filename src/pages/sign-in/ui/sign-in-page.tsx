@@ -6,6 +6,10 @@ import { Logo } from '@/shared/ui/logo'
 /**
  * web.max.ru sign-in layout: a 580×696 card on the space pattern on desktop,
  * a full-screen form with the logo in the header on phones.
+ *
+ * Desktop rhythm measured from web.max.ru: 16px header inset, 52px icon buttons,
+ * a 336px form column, ~40px under the footer link. Header and footer never scroll,
+ * so their insets survive even when a warning makes the form taller.
  */
 export const SignInPage = () => {
   const { t } = useTranslation()
@@ -22,40 +26,41 @@ export const SignInPage = () => {
           <span className="-top-20 -right-20 size-80 bg-brand-3 [animation-delay:-10s]" />
         </div>
 
-        <header className="relative flex items-center justify-between p-2 md:px-6 md:pt-6">
+        <header className="relative flex shrink-0 items-center justify-between p-2 md:px-4 md:pt-3.5 md:pb-0">
           <LanguageMenu />
           <Logo size={32} className="text-foreground md:hidden" />
           <SignInHelp />
         </header>
 
-        <div className="relative mx-auto flex min-h-0 w-full flex-1 flex-col px-3 md:max-w-[21rem] md:overflow-y-auto md:px-0 md:pb-8">
-          <Logo size={44} className="mx-auto mt-2 mb-9 max-md:hidden" />
-          <h1
-            id="sign-in-title"
-            className="mt-4 mb-6 text-center text-[21px] leading-[26px] font-semibold text-balance md:mt-0"
-          >
-            {t('signIn.title')}
-          </h1>
-
-          <SignInForm />
-
-          <footer className="mt-auto grid gap-4 pt-8 pb-6 text-center text-sm leading-snug text-subtle-foreground md:pb-0">
-            <p className="text-balance">
-              <Trans
-                i18nKey="signIn.disclaimer"
-                components={{ strong: <span className="text-foreground" /> }}
-              />
-            </p>
-            <a
-              href="https://console.green-api.com"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="text-[17px] font-medium text-link hover:text-link-hover"
+        <div className="relative min-h-0 flex-1 overflow-y-auto px-3 md:px-0">
+          <div className="mx-auto w-full md:max-w-[21rem] md:pt-10">
+            <Logo size={36} className="mx-auto mb-8 self-center max-md:hidden" />
+            <h1
+              id="sign-in-title"
+              className="mt-4 mb-6 text-center text-xl leading-[25px] font-semibold text-balance md:mt-0"
             >
-              {t('signIn.openConsole')}
-            </a>
-          </footer>
+              {t('signIn.title')}
+            </h1>
+            <SignInForm />
+          </div>
         </div>
+
+        <footer className="relative mx-auto grid w-full shrink-0 gap-3 px-3 pt-4 pb-6 text-center text-sm leading-5 text-subtle-foreground md:max-w-[21rem] md:px-0 md:pb-10">
+          <p className="text-balance">
+            <Trans
+              i18nKey="signIn.disclaimer"
+              components={{ strong: <span className="text-foreground" /> }}
+            />
+          </p>
+          <a
+            href="https://console.green-api.com"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="text-[17px] leading-6 font-medium text-link hover:text-link-hover"
+          >
+            {t('signIn.openConsole')}
+          </a>
+        </footer>
       </section>
     </main>
   )
