@@ -1,0 +1,5 @@
+branch=$(git rev-parse --abbrev-ref HEAD)
+if ! echo "$branch" | grep -Eq '^(main|dev|(feature|fix|chore|refactor|docs|test|release|hotfix)/[a-z0-9._-]+)$'; then
+  echo "Branch '$branch' does not match: feature/*, fix/*, chore/*, refactor/*, docs/*, test/*, release/*, hotfix/*"
+  exit 1
+fi

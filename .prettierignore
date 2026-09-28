@@ -1,0 +1,4 @@
+dist
+coverage
+src/shared/api/gen
+package-lock.json
