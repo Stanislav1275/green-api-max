@@ -1,12 +1,13 @@
 import { cn } from '@/shared/lib/cn'
 import { Avatar } from '@/shared/ui/avatar'
 
+/** MAX avatar gradients (avatar-chat-*-step-1 → step-2) */
 const GRADIENTS = [
-  'from-sky-400 to-blue-600',
-  'from-violet-400 to-purple-600',
-  'from-pink-400 to-rose-600',
-  'from-amber-400 to-orange-600',
-  'from-emerald-400 to-teal-600',
+  'from-[#ff48b6] to-[#ff8a35]', // coral
+  'from-[#ffc93d] to-[#ff832a]', // orange
+  'from-[#14e1d5] to-[#03c722]', // green
+  'from-[#08d7f3] to-[#5398ff]', // sky
+  'from-[#bf97ff] to-[#526eff]', // violet
 ]
 
 const pickGradient = (seed: string) => {
@@ -26,7 +27,7 @@ type ChatAvatarProps = {
 export const ChatAvatar = ({ seed, title, className }: ChatAvatarProps) => {
   const initials = /\p{L}/u.test(title) ? title.trim().slice(0, 1).toUpperCase() : '#'
   return (
-    <Avatar.Root className={cn('bg-linear-to-br text-white', pickGradient(seed), className)}>
+    <Avatar.Root className={cn('bg-linear-to-b text-white', pickGradient(seed), className)}>
       <Avatar.Fallback>{initials}</Avatar.Fallback>
     </Avatar.Root>
   )

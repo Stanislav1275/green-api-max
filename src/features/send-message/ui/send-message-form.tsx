@@ -30,23 +30,16 @@ export const SendMessageForm = ({ chat }: { chat: Chat }) => {
         send(chat, text)
       }}
       onKeyDown={handleKeyDown}
-      className="flex items-end gap-2 border-t bg-background p-3"
+      className="flex shrink-0 items-end gap-2 border-t border-divider bg-background px-3 py-2.5"
     >
       <FormField
         name="text"
         label="Сообщение"
         hideLabel
         rootClassName="flex-1"
-        render={
-          <Textarea
-            rows={1}
-            placeholder="Сообщение"
-            maxLength={MAX_MESSAGE_LENGTH}
-            className="rounded-2xl"
-          />
-        }
+        render={<Textarea rows={1} placeholder="Сообщение" maxLength={MAX_MESSAGE_LENGTH} />}
       />
-      <FormSubmit requireValid size="icon" className="rounded-full" aria-label="Отправить">
+      <FormSubmit requireValid size="icon" className="size-11" aria-label="Отправить">
         <SendHorizontal />
       </FormSubmit>
     </Form>

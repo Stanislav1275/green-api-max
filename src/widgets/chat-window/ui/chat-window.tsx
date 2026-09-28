@@ -31,12 +31,14 @@ export const ChatWindow = ({ className }: { className?: string }) => {
     return (
       <section
         className={cn(
-          'flex flex-col items-center justify-center gap-3 bg-chat-background text-muted-foreground',
+          'bg-space-pattern flex flex-col items-center justify-center gap-3 bg-chat-background text-subtle-foreground',
           className,
         )}
       >
-        <MessagesSquare className="size-12 opacity-40" />
-        <p className="text-sm">Выберите чат или создайте новый</p>
+        <MessagesSquare className="size-12 opacity-60" />
+        <p className="rounded-full bg-background/70 px-4 py-1.5 text-sm backdrop-blur">
+          Выберите чат или создайте новый
+        </p>
       </section>
     )
   }
@@ -45,7 +47,7 @@ export const ChatWindow = ({ className }: { className?: string }) => {
 
   return (
     <section aria-label={`Чат: ${title}`} className={cn('flex min-h-0 flex-col', className)}>
-      <header className="flex items-center gap-3 border-b bg-background px-3 py-2">
+      <header className="flex h-16 shrink-0 items-center gap-3 border-b border-divider bg-background px-3">
         <Button
           variant="ghost"
           size="icon"
@@ -57,22 +59,28 @@ export const ChatWindow = ({ className }: { className?: string }) => {
         </Button>
         <ChatAvatar seed={chat.id} title={title} />
         <div className="min-w-0">
-          <h2 className="truncate font-medium">{title}</h2>
+          <h2 className="truncate text-base font-medium">{title}</h2>
           {chat.phone && chat.name ? (
-            <p className="truncate text-xs text-muted-foreground">{formatPhone(chat.phone)}</p>
+            <p className="truncate text-[13px] text-subtle-foreground">{formatPhone(chat.phone)}</p>
           ) : null}
         </div>
       </header>
 
-      <ScrollArea className="flex-1 bg-chat-background" viewportProps={{ ref: viewportRef }}>
+      <ScrollArea
+        className="bg-space-pattern flex-1 bg-chat-background"
+        viewportProps={{ ref: viewportRef }}
+      >
         {chat.messages.length > 0 ? (
-          <ol aria-label="Сообщения" className="flex flex-col gap-1.5 px-4 py-4">
+          <ol
+            aria-label="Сообщения"
+            className="mx-auto flex max-w-3xl flex-col gap-1 px-3 py-4 md:px-6"
+          >
             {chat.messages.map((message) => (
               <MessageBubble key={message.id} message={message} />
             ))}
           </ol>
         ) : (
-          <p className="px-6 py-10 text-center text-sm text-muted-foreground">
+          <p className="mx-auto mt-10 w-fit rounded-full bg-background/70 px-4 py-1.5 text-center text-sm text-subtle-foreground backdrop-blur">
             Сообщений пока нет — напишите первым
           </p>
         )}
