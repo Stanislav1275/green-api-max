@@ -16,7 +16,7 @@ describe('normalizeError', () => {
       normalizeError(responseError(422, { errors: { chatId: ['обязателен', 'формат'] } })),
     ).resolves.toEqual({
       kind: 'validation',
-      message: 'Проверьте поля формы',
+      message: 'errors.checkFields',
       fields: { chatId: 'обязателен, формат' },
     })
   })
@@ -45,18 +45,18 @@ describe('normalizeError', () => {
       message: 'chatId is wrong',
     })
     await expect(normalizeError(responseError(400, 'not json'))).resolves.toMatchObject({
-      message: 'Некорректный запрос',
+      message: 'errors.status.400',
     })
   })
 
   it.each([
-    [401, 'Неверный idInstance или apiTokenInstance'],
-    [403, 'Доступ запрещён — проверьте apiTokenInstance'],
-    [404, 'Инстанс не найден — проверьте apiUrl и idInstance'],
-    [429, 'Слишком много запросов, попробуйте позже'],
-    [466, 'Исчерпан лимит запросов по тарифу'],
-    [503, 'Сервер GREEN-API недоступен'],
-  ])('maps %i to a human message', async (status, message) => {
+    [401, 'errors.status.401'],
+    [403, 'errors.status.403'],
+    [404, 'errors.status.404'],
+    [429, 'errors.status.429'],
+    [466, 'errors.status.466'],
+    [503, 'errors.server'],
+  ])('maps %i to a translation key', async (status, message) => {
     await expect(normalizeError(responseError(status, { error: 'x' }))).resolves.toEqual({
       kind: 'http',
       status,
@@ -82,7 +82,7 @@ describe('normalizeError', () => {
   it('turns a timeout into "server did not respond"', async () => {
     await expect(normalizeError(new DOMException('timed out', 'TimeoutError'))).resolves.toEqual({
       kind: 'timeout',
-      message: 'Сервер не ответил — попробуйте ещё раз',
+      message: 'errors.timeout',
     })
   })
 

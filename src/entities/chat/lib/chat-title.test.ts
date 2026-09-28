@@ -1,3 +1,5 @@
+import { i18n } from '@/shared/lib/i18n'
+
 import type { Chat } from '../model/types'
 import { getChatTitle } from './chat-title'
 
@@ -16,5 +18,5 @@ it.each([
   [{ phone: '79991234567' }, '+7 999 123-45-67'],
   [{}, 'Чат 10000000'],
 ])('getChatTitle(%o) → %s', (overrides, title) => {
-  expect(getChatTitle(chat(overrides))).toBe(title)
+  expect(getChatTitle(chat(overrides), i18n.t)).toBe(title)
 })
