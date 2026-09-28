@@ -2,32 +2,29 @@ import { type KeyboardEvent as ReactKeyboardEvent, useEffect, useEffectEvent } f
 
 import { matchesHotKey } from './match-hot-key'
 
-export type HotKeyHandler = (event: KeyboardEvent) => void
-
 export type HotKeyOptions = {
   /** @default true */
   preventDefault?: boolean
 }
 
 /** `['Enter', submit]`, `[['Mod+Enter', 'Ctrl+S'], save, { preventDefault: false }]` */
-export type HotKeyBinding = readonly [
+export type HotKeyBinding<TEvent> = readonly [
   combo: string | readonly string[],
-  handler: HotKeyHandler,
+  handler: (event: TEvent) => void,
   options?: HotKeyOptions,
 ]
 
-type UseHotKeyOptions = {
-  /** listen on `window` instead of returning an element `onKeyDown` */
-  global?: boolean
-}
-
-const handleBindings = (bindings: readonly HotKeyBinding[], event: KeyboardEvent) => {
+const handleBindings = <TEvent extends { preventDefault: () => void }>(
+  bindings: readonly HotKeyBinding<TEvent>[],
+  event: TEvent,
+  nativeEvent: KeyboardEvent,
+) => {
   // never hijack keys while an IME is composing (Chinese, Japanese, Korean input)
-  if (event.isComposing) {
+  if (nativeEvent.isComposing) {
     return
   }
   const binding = bindings.find(([combo]) =>
-    (typeof combo === 'string' ? [combo] : combo).some((key) => matchesHotKey(event, key)),
+    (typeof combo === 'string' ? [combo] : combo).some((key) => matchesHotKey(nativeEvent, key)),
   )
   if (!binding) {
     return
@@ -40,32 +37,29 @@ const handleBindings = (bindings: readonly HotKeyBinding[], event: KeyboardEvent
 }
 
 /**
- * Keyboard shortcuts from a list of `[combo, handler, options?]` bindings; the first match wins.
- * Returns an `onKeyDown` for an element, or listens on `window` with `{ global: true }`.
+ * Element shortcuts from a list of `[combo, handler, options?]` bindings; the first match wins.
+ * Returns an `onKeyDown`; handlers get the React event, so `event.currentTarget` is typed.
  */
-export const useHotKey = <TElement extends Element = Element>(
-  bindings: readonly HotKeyBinding[],
-  { global = false }: UseHotKeyOptions = {},
-) => {
-  // latest bindings without re-subscribing the window listener on every render
-  const onWindowKeyDown = useEffectEvent((event: KeyboardEvent) => {
-    handleBindings(bindings, event)
+// eslint-disable-next-line @eslint-react/no-unnecessary-use-prefix -- paired with useGlobalHotKey, called in render
+export const useHotKey =
+  <TElement extends Element>(bindings: readonly HotKeyBinding<ReactKeyboardEvent<TElement>>[]) =>
+  (event: ReactKeyboardEvent<TElement>) => {
+    handleBindings(bindings, event, event.nativeEvent)
+  }
+
+/** Same bindings on `window`, subscribed once; handlers always see the latest render's closures. */
+export const useGlobalHotKey = (bindings: readonly HotKeyBinding<KeyboardEvent>[]) => {
+  const onKeyDown = useEffectEvent((event: KeyboardEvent) => {
+    handleBindings(bindings, event, event)
   })
 
   useEffect(() => {
-    if (!global) {
-      return
-    }
     const listener = (event: KeyboardEvent) => {
-      onWindowKeyDown(event)
+      onKeyDown(event)
     }
     window.addEventListener('keydown', listener)
     return () => {
       window.removeEventListener('keydown', listener)
     }
-  }, [global])
-
-  return (event: ReactKeyboardEvent<TElement>) => {
-    handleBindings(bindings, event.nativeEvent)
-  }
+  }, [])
 }
