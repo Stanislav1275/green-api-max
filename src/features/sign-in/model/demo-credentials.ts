@@ -8,6 +8,3 @@ export const DEMO_CREDENTIALS: Credentials = {
   idInstance: '3100000001',
   apiTokenInstance: 'demo-token',
 }
-
-/** fields worth showing in the hint; apiUrl is already prefilled */
-export const DEMO_HINT_FIELDS = ['idInstance', 'apiTokenInstance'] as const

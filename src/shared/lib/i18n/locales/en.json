@@ -29,9 +29,8 @@
       "step3": "In the instance settings keep webhookUrl empty and enable notifications."
     },
     "demo": {
-      "title": "Demo mode",
-      "description": "GREEN-API is mocked: any credentials work, the contact echoes your messages.",
-      "fill": "Fill in demo credentials"
+      "description": "Demo: any credentials work",
+      "fill": "Fill in"
     }
   },
   "chats": {

@@ -5,7 +5,7 @@ import { Alert } from '@/shared/ui/alert'
 import { Button } from '@/shared/ui/button'
 import { Form, FormField, FormSubmit } from '@/shared/ui/form'
 
-import { DEMO_CREDENTIALS, DEMO_HINT_FIELDS, IS_DEMO } from '../model/demo-credentials'
+import { DEMO_CREDENTIALS, IS_DEMO } from '../model/demo-credentials'
 import { InstanceNotReadyError, useSignIn } from '../model/use-sign-in'
 
 /** web.max.ru sign-in field: 52px tall, 16px radius, 17px text */
@@ -35,23 +35,15 @@ export const SignInForm = () => {
       }}
     >
       {IS_DEMO ? (
-        <Alert.Root role="note" className="mb-1">
-          <Alert.Title>{t('signIn.demo.title')}</Alert.Title>
-          <Alert.Description>
-            <p>{t('signIn.demo.description')}</p>
-            <dl className="font-mono text-xs">
-              {DEMO_HINT_FIELDS.map((key) => (
-                <div key={key}>
-                  <dt className="inline">{`${key}: `}</dt>
-                  <dd className="inline">{DEMO_CREDENTIALS[key]}</dd>
-                </div>
-              ))}
-            </dl>
-          </Alert.Description>
+        <Alert.Root
+          role="note"
+          className="flex items-center justify-between gap-3 rounded-lg py-2 pr-3 text-[13px]"
+        >
+          <span>{t('signIn.demo.description')}</span>
           <Button
             variant="link"
             size="inline"
-            className="justify-self-start text-sm"
+            className="text-[13px]"
             onClick={() => {
               form.reset(DEMO_CREDENTIALS)
             }}
