@@ -4,6 +4,7 @@ import { type Control, Controller, type FieldPath, type FieldValues } from 'reac
 import { cn } from '@/shared/lib/cn'
 
 import { Field } from '../field'
+import { FormMessage } from './form-message'
 
 type FormFieldProps<TValues extends FieldValues> = Omit<
   ComponentProps<typeof Field.Control>,
@@ -50,7 +51,7 @@ export const FormField = <TValues extends FieldValues>({
           onBlur={field.onBlur}
           disabled={field.disabled ?? controlProps.disabled}
         />
-        <Field.Error match={fieldState.invalid}>{fieldState.error?.message}</Field.Error>
+        <FormMessage>{fieldState.error?.message}</FormMessage>
       </Field.Root>
     )}
   />
