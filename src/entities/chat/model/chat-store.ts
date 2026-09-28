@@ -15,13 +15,13 @@ type ChatState = {
   reset: () => void
 }
 
-const emptyChat = (id: string, phone: string | null): Chat => ({
+const emptyChat = (id: string, phone: string | null, updatedAt = Date.now()): Chat => ({
   id,
   phone,
   maxChatId: null,
   name: null,
   messages: [],
-  updatedAt: Date.now(),
+  updatedAt,
 })
 
 const upsertMessage = (messages: Message[], message: Message) =>
@@ -101,7 +101,9 @@ export const useChatStore = create<ChatState>()(
       applyEvent: (event) => {
         set((state) => {
           const existing = findChat(state.chats, event)
-          const chat = existing ?? emptyChat(event.phone ?? event.maxChatId, event.phone)
+          // a chat born from a queued notification is as old as its message, not "now"
+          const chat =
+            existing ?? emptyChat(event.phone ?? event.maxChatId, event.phone, event.timestamp)
           const message: Message = {
             id: event.id,
             text: event.text,
