@@ -1,3 +1,4 @@
+export { type AppError, normalizeError, UNKNOWN_ERROR_MESSAGE } from './errors'
 export type {
   Notification,
   NotificationBody,
