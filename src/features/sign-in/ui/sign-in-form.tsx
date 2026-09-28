@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 
 import { type Credentials, type CredentialsInput, credentialsSchema } from '@/entities/session'
+import { useFormResolver } from '@/shared/lib/form'
 import { Alert } from '@/shared/ui/alert'
 import { Button } from '@/shared/ui/button'
 import { FormField } from '@/shared/ui/form'
@@ -20,7 +21,7 @@ const PROBLEM_TEXT: Record<InstanceProblem, string> = {
 
 export const SignInForm = () => {
   const signIn = useSignIn()
-  const { control, handleSubmit } = useForm<CredentialsInput, unknown, Credentials>({
+  const form = useForm<CredentialsInput, unknown, Credentials>({
     resolver: zodResolver(credentialsSchema),
     defaultValues: {
       apiUrl: import.meta.env.VITE_DEFAULT_API_URL ?? '',
@@ -28,19 +29,26 @@ export const SignInForm = () => {
       apiTokenInstance: '',
     },
   })
+  const { resolveError } = useFormResolver(form)
 
   return (
     <form
       noValidate
       className="grid gap-4"
       onSubmit={(event) =>
-        void handleSubmit((credentials) => {
-          signIn.mutate(credentials)
+        void form.handleSubmit((credentials) => {
+          signIn.mutate(credentials, {
+            onError: (error) => {
+              if (!(error instanceof InstanceNotReadyError)) {
+                void resolveError(error)
+              }
+            },
+          })
         })(event)
       }
     >
       <FormField
-        control={control}
+        control={form.control}
         name="apiUrl"
         label="apiUrl"
         type="url"
@@ -48,7 +56,7 @@ export const SignInForm = () => {
         autoComplete="url"
       />
       <FormField
-        control={control}
+        control={form.control}
         name="idInstance"
         label="idInstance"
         inputMode="numeric"
@@ -56,7 +64,7 @@ export const SignInForm = () => {
         autoComplete="username"
       />
       <FormField
-        control={control}
+        control={form.control}
         name="apiTokenInstance"
         label="apiTokenInstance"
         type="password"
@@ -73,11 +81,6 @@ export const SignInForm = () => {
               ))}
             </ul>
           </Alert.Description>
-        </Alert.Root>
-      ) : signIn.error ? (
-        <Alert.Root variant="destructive">
-          <Alert.Title>Не удалось подключиться</Alert.Title>
-          <Alert.Description>Проверьте apiUrl, idInstance и apiTokenInstance.</Alert.Description>
         </Alert.Root>
       ) : null}
 
