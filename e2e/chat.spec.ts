@@ -12,7 +12,7 @@ test.describe('основной сценарий ТЗ', () => {
     await app.send('Привет из e2e')
 
     const messages = app.messages()
-    await expect(messages.getByText('Привет из e2e')).toBeVisible()
+    await expect(messages.getByText('Привет из e2e', { exact: true })).toBeVisible()
     await expect(messages.getByLabel('Отправлено')).toBeVisible()
     await expect(page.getByLabel('Сообщение')).toHaveValue('')
     await expect(messages.getByText('Эхо: Привет из e2e')).toBeVisible()
@@ -32,7 +32,7 @@ test.describe('основной сценарий ТЗ', () => {
       .getByRole('navigation', { name: 'Список чатов' })
       .getByRole('button', { name: /999 123-45-67/ })
       .click()
-    await expect(app.messages().getByText('Переживу reload')).toBeVisible()
+    await expect(app.messages().getByText('Переживу reload', { exact: true })).toBeVisible()
   })
 
   test('TC-5.2: выход возвращает на экран входа и очищает сессию', async ({ app, page }) => {
