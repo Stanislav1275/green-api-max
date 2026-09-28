@@ -1,16 +1,9 @@
 import { SignInForm, SignInHelp } from '@/features/sign-in'
 import { LanguageMenu } from '@/features/switch-language'
+import { DemoModeToggle } from '@/features/toggle-demo'
 import { Trans, useTranslation } from '@/shared/lib/i18n'
 import { Logo } from '@/shared/ui/logo'
 
-/**
- * web.max.ru sign-in layout: a 580×696 card on the space pattern on desktop,
- * a full-screen form with the logo in the header on phones.
- *
- * Desktop rhythm measured from web.max.ru: 16px header inset, 52px icon buttons,
- * a 336px form column, ~40px under the footer link. Header and footer never scroll,
- * so their insets survive even when a warning makes the form taller.
- */
 export const SignInPage = () => {
   const { t } = useTranslation()
 
@@ -22,10 +15,15 @@ export const SignInPage = () => {
       >
         <div aria-hidden className="card-glow max-md:hidden" />
 
-        <header className="relative flex shrink-0 items-center justify-between p-2 md:px-4 md:pt-3.5 md:pb-0">
-          <LanguageMenu />
+        <header className="relative grid shrink-0 grid-cols-[1fr_auto_1fr] items-center p-2 md:px-4 md:pt-3.5 md:pb-0">
+          <div className="justify-self-start">
+            <LanguageMenu />
+          </div>
           <Logo size={32} className="text-foreground md:hidden" />
-          <SignInHelp />
+          <div className="col-start-3 flex justify-self-end">
+            <DemoModeToggle />
+            <SignInHelp />
+          </div>
         </header>
 
         <div className="relative min-h-0 flex-1 overflow-y-auto px-3 md:px-0">

@@ -104,5 +104,10 @@
     "md": "Moldova",
     "tj": "Tajikistan",
     "uz": "Uzbekistan"
+  },
+  "demoMode": {
+    "toggle": "Demo mode",
+    "on": "Demo mode is on: GREEN-API is mocked",
+    "off": "Turn on demo mode, no real instance needed"
   }
 }

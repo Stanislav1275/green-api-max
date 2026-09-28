@@ -1,11 +1,12 @@
 import { credentialsSchema } from '@/entities/session'
+import { useDemoMode } from '@/shared/lib/demo-mode'
 import { useZodForm } from '@/shared/lib/form'
 import { useTranslation } from '@/shared/lib/i18n'
 import { Alert } from '@/shared/ui/alert'
 import { Button } from '@/shared/ui/button'
 import { Form, FormField, FormSubmit } from '@/shared/ui/form'
 
-import { DEMO_CREDENTIALS, IS_DEMO } from '../model/demo-credentials'
+import { DEMO_CREDENTIALS } from '../model/demo-credentials'
 import { InstanceNotReadyError, useSignIn } from '../model/use-sign-in'
 
 /** web.max.ru sign-in field: 52px tall, 16px radius, 17px text */
@@ -14,6 +15,7 @@ const FIELD_CLASS = 'h-13 rounded-xl px-4 md:text-[17px]'
 export const SignInForm = () => {
   const { t } = useTranslation()
   const signIn = useSignIn()
+  const isDemo = useDemoMode()
   const form = useZodForm(credentialsSchema, {
     // deploy-time prefill is a UI concern, so it is not baked into the entity schema
     defaultValues: { apiUrl: import.meta.env.VITE_DEFAULT_API_URL ?? '' },
@@ -34,7 +36,7 @@ export const SignInForm = () => {
         }
       }}
     >
-      {IS_DEMO ? (
+      {isDemo ? (
         <Alert.Root
           role="note"
           className="flex items-center justify-between gap-3 rounded-lg py-2 pr-3 text-[13px]"
