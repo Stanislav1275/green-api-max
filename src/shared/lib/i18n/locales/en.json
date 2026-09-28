@@ -27,6 +27,11 @@
       "step1": "Open the <link>GREEN-API console</link> and pick your MAX instance.",
       "step2": "Copy apiUrl, idInstance and apiTokenInstance from the instance page.",
       "step3": "In the instance settings keep webhookUrl empty and enable notifications."
+    },
+    "demo": {
+      "title": "Demo mode",
+      "description": "GREEN-API is mocked: any credentials work, the contact echoes your messages.",
+      "fill": "Fill in demo credentials"
     }
   },
   "chats": {
