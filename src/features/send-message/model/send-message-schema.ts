@@ -8,7 +8,8 @@ const { message } = sendMessageRequestSchema.shape
 export const MAX_MESSAGE_LENGTH = message.maxLength ?? 4000
 
 export const sendMessageSchema = z.object({
-  text: message.trim().min(1, 'Введите сообщение'),
+  text: message.trim().min(1, 'Введите сообщение').prefault(''),
 })
 
-export type SendMessageValues = z.infer<typeof sendMessageSchema>
+export type SendMessageInput = z.input<typeof sendMessageSchema>
+export type SendMessageValues = z.output<typeof sendMessageSchema>
