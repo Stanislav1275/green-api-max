@@ -3,12 +3,14 @@ import { LanguageMenu } from '@/features/switch-language'
 import { DemoModeToggle } from '@/features/toggle-demo'
 import { Trans, useTranslation } from '@/shared/lib/i18n'
 import { Logo } from '@/shared/ui/logo'
+import { Seo } from '@/shared/ui/seo'
 
 export const SignInPage = () => {
   const { t } = useTranslation()
 
   return (
     <main className="min-h-full bg-background-secondary md:bg-space-pattern md:grid md:place-items-center md:bg-chat-background md:p-8">
+      <Seo title={t('seo.signIn.title')} description={t('seo.signIn.description')} />
       <section
         aria-labelledby="sign-in-title"
         className="relative flex min-h-dvh flex-col md:h-[696px] md:min-h-0 md:w-[580px] md:overflow-hidden md:rounded-[1.75rem] md:border md:border-divider md:bg-background md:shadow-2xl"

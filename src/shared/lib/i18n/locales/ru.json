@@ -109,5 +109,15 @@
     "toggle": "Демо-режим",
     "on": "Демо-режим включён: GREEN-API подменён моком",
     "off": "Включить демо-режим без настоящего инстанса"
+  },
+  "seo": {
+    "signIn": {
+      "title": "Вход",
+      "description": "Веб-чат MAX через GREEN-API: войдите по idInstance и apiTokenInstance, чтобы переписываться с контактами MAX."
+    },
+    "messenger": {
+      "title": "Чаты",
+      "description": "Переписка в MAX через HTTP API GREEN-API."
+    }
   }
 }

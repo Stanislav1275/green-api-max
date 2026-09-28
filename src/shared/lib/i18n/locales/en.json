@@ -109,5 +109,15 @@
     "toggle": "Demo mode",
     "on": "Demo mode is on: GREEN-API is mocked",
     "off": "Turn on demo mode, no real instance needed"
+  },
+  "seo": {
+    "signIn": {
+      "title": "Sign in",
+      "description": "A MAX web chat over GREEN-API: sign in with idInstance and apiTokenInstance to message your MAX contacts."
+    },
+    "messenger": {
+      "title": "Chats",
+      "description": "MAX messaging over the GREEN-API HTTP API."
+    }
   }
 }
