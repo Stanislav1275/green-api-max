@@ -24,7 +24,7 @@ export const SignInForm = () => {
   return (
     <Form
       form={form}
-      className="grid gap-4"
+      className="grid gap-3"
       onSubmit={async (credentials) => {
         try {
           await signIn.mutateAsync(credentials)
@@ -39,23 +39,30 @@ export const SignInForm = () => {
       <FormField
         name="apiUrl"
         label="apiUrl"
+        hideLabel
         type="url"
-        placeholder="https://3100.api.green-api.com/v3"
+        placeholder="apiUrl — https://…api.green-api.com"
         autoComplete="url"
       />
       <FormField
         name="idInstance"
         label="idInstance"
+        hideLabel
         inputMode="numeric"
-        placeholder="3100000001"
+        placeholder="idInstance"
         autoComplete="username"
       />
       <FormField
         name="apiTokenInstance"
         label="apiTokenInstance"
+        hideLabel
         type="password"
+        placeholder="apiTokenInstance"
         autoComplete="current-password"
       />
+      <p className="-mt-1 px-4 text-[13px] leading-snug text-subtle-foreground">
+        Данные инстанса есть в личном кабинете GREEN-API — нажмите «?», чтобы узнать где
+      </p>
 
       {signIn.error instanceof InstanceNotReadyError ? (
         <Alert.Root variant="warning">
@@ -70,7 +77,9 @@ export const SignInForm = () => {
         </Alert.Root>
       ) : null}
 
-      <FormSubmit size="lg">Войти</FormSubmit>
+      <FormSubmit size="lg" className="mt-3 w-full">
+        Войти
+      </FormSubmit>
     </Form>
   )
 }
