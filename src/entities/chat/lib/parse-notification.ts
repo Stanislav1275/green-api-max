@@ -1,4 +1,4 @@
-import type { NotificationBody } from '@/shared/api'
+import { notificationBodySchema } from '@/shared/api'
 
 export type MessageEvent = {
   id: string
@@ -23,8 +23,14 @@ const pickName = (...names: (string | undefined)[]) => names.find((name) => name
 
 const PHONE_CHAT_ID = /^(\d+)@c\.us$/
 
-/** Extracts a text message from a notification; anything else (statuses, media, calls) → `null`. */
-export const parseNotification = (body: NotificationBody): MessageEvent | null => {
+/** Extracts a text message from a notification; anything else (statuses, media, malformed) → `null`. */
+export const parseNotification = (payload: unknown): MessageEvent | null => {
+  // external data: validate against the OpenAPI-generated schema before trusting it
+  const parsed = notificationBodySchema.safeParse(payload)
+  if (!parsed.success) {
+    return null
+  }
+  const body = parsed.data
   const direction = DIRECTION_BY_WEBHOOK[body.typeWebhook]
   const { senderData, messageData, idMessage } = body
   const text =
