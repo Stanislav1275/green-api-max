@@ -1,11 +1,12 @@
 import { useCredentials } from '@/entities/session'
+import { MessengerPage } from '@/pages/messenger'
 import { SignInPage } from '@/pages/sign-in'
 
 import { QueryProvider } from './query/query-provider'
 
 const Screen = () => {
   const credentials = useCredentials()
-  return credentials ? <p className="p-6">Чаты скоро будут здесь</p> : <SignInPage />
+  return credentials ? <MessengerPage /> : <SignInPage />
 }
 
 export const App = () => (
