@@ -52,6 +52,22 @@ HTTP API получает уведомления, только если в [на
 
 `localStorage`: вход переживает перезагрузку. Бэкенда нет, поэтому httpOnly-cookie невозможна, и от XSS не спасает ни одно JS-хранилище — защита в том, что текст сообщений рендерится только как текст (React-экранирование, без `dangerouslySetInnerHTML`). Для общих компьютеров достаточно заменить хранилище на `sessionStorage` в [`session-store.ts`](src/entities/session/model/session-store.ts). Кнопка «Выйти» очищает и токен, и историю.
 
+## Обработка ошибок
+
+Любая ошибка запроса приводится к одному виду — `AppError` ([`normalize-error.ts`](src/shared/api/errors/normalize-error.ts)):
+
+| kind         | Когда                                          | Что видит пользователь                         |
+| ------------ | ---------------------------------------------- | ---------------------------------------------- |
+| `validation` | 400/422 с ошибками полей                       | подсветка полей формы (`FormMessage`)          |
+| `http`       | известный статус: 401, 403, 404, 429, 466, 5xx | toast с понятным текстом                       |
+| `network`    | хост недоступен / CORS                         | toast «Нет соединения…»                        |
+| `aborted`    | отмена запроса нами                            | ничего                                         |
+| `unknown`    | всё остальное                                  | toast «Произошла неизвестная серверная ошибка» |
+
+- `resolveErrorAsync(error)` — самостоятельный обработчик: нормализует и показывает toast.
+- `const { resolveError } = useFormResolver(form)` — для react-hook-form: ошибки полей из ответа уходят в `form.setError`, остальное — в toast.
+- Все мутации без `meta.manualErrorHandling` показывают toast автоматически через `MutationCache.onError`.
+
 ## Стек
 
 - **React 19** + **React Compiler** (без ручных `useMemo`/`useCallback`), Vite 8, TypeScript strict
@@ -59,6 +75,7 @@ HTTP API получает уведомления, только если в [на
 - **Kubb** — из [`api/green-api.yaml`](api/green-api.yaml) генерируются типы, zod-схемы, fetch-клиент, TanStack Query options и faker-фабрики
 - **Base UI** + Tailwind v4 + cva — композиционный UI-kit в подходе shadcn/ui (компоненты лежат в проекте, а не в `node_modules`)
 - **react-hook-form** + `zodResolver`; схемы — из Kubb, расширенные клиентскими правилами
+- **Base UI Toast** — уведомления об ошибках
 - **TanStack Query**, **zustand** (persist)
 - **MSW** — мок GREEN-API для тестов и демо-режима; **Vitest** + Testing Library
 
