@@ -101,7 +101,7 @@ User stories и тест-кейсы — в [`docs/user-stories.md`](docs/user-st
 
 ```bash
 npm test                 # unit + интеграционные
-npm run test:coverage    # порог 100% по statements / branches / functions / lines
+npm run test:coverage    # порог 100% по statements / branches / functions / lines (в CI пока не гейт)
 npx playwright install chromium && npm run test:e2e
 ```
 
@@ -146,6 +146,20 @@ src/
 | `npm run typecheck`          | `tsc -b`                                         |
 | `npm test` / `test:coverage` | Vitest                                           |
 | `npm run api:gen`            | перегенерировать `src/shared/api/gen` из OpenAPI |
+| `npm run test:e2e`           | Playwright в демо-режиме                         |
+
+## CI/CD
+
+GitHub Actions, `.github/workflows/`:
+
+| Workflow     | Когда                  | Что                                                                                                          |
+| ------------ | ---------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `ci.yml`     | push в `dev`, любой PR | параллельно: Prettier + ESLint + steiger + `tsc` + сверка `api:gen` с OpenAPI · Vitest · Playwright · сборка |
+| `deploy.yml` | push в `main`, вручную | тот же CI, затем демо-сборка (`VITE_DEMO_MODE=on`) на GitHub Pages                                           |
+
+Сборка на Pages идёт под путём `/<repo>/` (`VITE_BASE_PATH`), MSW-воркер берётся оттуда же. Отчёт Playwright при падении — в артефактах.
+
+Один раз после создания репозитория: **Settings → Pages → Source: GitHub Actions**.
 
 ## Git flow
 
