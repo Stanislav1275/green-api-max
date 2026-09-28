@@ -2,3 +2,4 @@ dist
 coverage
 src/shared/api/gen
 package-lock.json
+public/mockServiceWorker.js

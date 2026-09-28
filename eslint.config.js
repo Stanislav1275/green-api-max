@@ -2,6 +2,7 @@ import js from '@eslint/js'
 import eslintReact from '@eslint-react/eslint-plugin'
 import prettier from 'eslint-config-prettier'
 import boundaries from 'eslint-plugin-boundaries'
+import checkFile from 'eslint-plugin-check-file'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
@@ -22,7 +23,7 @@ const layerPolicies = FSD_LAYERS.map((layer, index) => ({
 }))
 
 export default defineConfig([
-  globalIgnores(['dist', 'coverage', 'playwright-report', 'src/shared/api/gen']),
+  globalIgnores(['dist', 'coverage', 'playwright-report', 'src/shared/api/gen', 'public']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -105,6 +106,18 @@ export default defineConfig([
           ],
         },
       ],
+    },
+  },
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    plugins: { 'check-file': checkFile },
+    rules: {
+      'check-file/filename-naming-convention': [
+        'error',
+        { 'src/**/*.{ts,tsx}': 'KEBAB_CASE' },
+        { ignoreMiddleExtensions: true },
+      ],
+      'check-file/folder-naming-convention': ['error', { 'src/**/': 'KEBAB_CASE' }],
     },
   },
   {
