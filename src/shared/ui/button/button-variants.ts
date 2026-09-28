@@ -18,8 +18,8 @@ export const buttonVariants = cva(
       size: {
         sm: 'h-8 rounded-md px-3 text-sm',
         default: 'h-10 rounded-lg px-4 text-[15px]',
-        lg: 'h-14 rounded-xl px-6 text-base',
-        icon: 'size-10 rounded-full',
+        lg: 'h-15 rounded-xl px-6 text-lg',
+        icon: 'size-11 rounded-full',
         inline: 'h-auto p-0 text-[15px]',
       },
     },
