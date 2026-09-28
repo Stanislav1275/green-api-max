@@ -1,0 +1,229 @@
+openapi: 3.1.0
+info:
+  title: GREEN-API (MAX)
+  version: 1.0.0
+  description: |
+    Subset of GREEN-API v3 used by the chat client.
+    Docs: https://green-api.com/v3/docs/api/
+servers:
+  - url: https://api.green-api.com/v3
+tags:
+  - name: account
+  - name: sending
+  - name: receiving
+paths:
+  /waInstance{idInstance}/getStateInstance/{apiTokenInstance}:
+    get:
+      tags: [account]
+      operationId: getStateInstance
+      parameters:
+        - $ref: '#/components/parameters/IdInstance'
+        - $ref: '#/components/parameters/ApiTokenInstance'
+      responses:
+        '200':
+          description: Instance state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StateInstance'
+  /waInstance{idInstance}/getSettings/{apiTokenInstance}:
+    get:
+      tags: [account]
+      operationId: getSettings
+      parameters:
+        - $ref: '#/components/parameters/IdInstance'
+        - $ref: '#/components/parameters/ApiTokenInstance'
+      responses:
+        '200':
+          description: Instance settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'
+  /waInstance{idInstance}/sendMessage/{apiTokenInstance}:
+    post:
+      tags: [sending]
+      operationId: sendMessage
+      parameters:
+        - $ref: '#/components/parameters/IdInstance'
+        - $ref: '#/components/parameters/ApiTokenInstance'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendMessageRequest'
+      responses:
+        '200':
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendMessageResponse'
+  /waInstance{idInstance}/receiveNotification/{apiTokenInstance}:
+    get:
+      tags: [receiving]
+      operationId: receiveNotification
+      parameters:
+        - $ref: '#/components/parameters/IdInstance'
+        - $ref: '#/components/parameters/ApiTokenInstance'
+        - name: receiveTimeout
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 5
+            maximum: 60
+      responses:
+        '200':
+          description: Oldest notification in the queue, or null when the queue is empty
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Notification'
+                  - type: 'null'
+  /waInstance{idInstance}/deleteNotification/{apiTokenInstance}/{receiptId}:
+    delete:
+      tags: [receiving]
+      operationId: deleteNotification
+      parameters:
+        - $ref: '#/components/parameters/IdInstance'
+        - $ref: '#/components/parameters/ApiTokenInstance'
+        - name: receiptId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Deletion result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteNotificationResponse'
+components:
+  parameters:
+    IdInstance:
+      name: idInstance
+      in: path
+      required: true
+      schema:
+        type: string
+    ApiTokenInstance:
+      name: apiTokenInstance
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    StateInstance:
+      type: object
+      required: [stateInstance]
+      properties:
+        stateInstance:
+          type: string
+          enum: [notAuthorized, authorized, blocked, starting, yellowCard]
+    Settings:
+      type: object
+      properties:
+        wid:
+          type: string
+        webhookUrl:
+          type: string
+        incomingWebhook:
+          $ref: '#/components/schemas/YesNo'
+        outgoingWebhook:
+          $ref: '#/components/schemas/YesNo'
+        outgoingAPIMessageWebhook:
+          $ref: '#/components/schemas/YesNo'
+    YesNo:
+      type: string
+      enum: ['yes', 'no']
+    SendMessageRequest:
+      type: object
+      required: [chatId, message]
+      properties:
+        chatId:
+          type: string
+          example: 79991234567@c.us
+        message:
+          type: string
+          maxLength: 4000
+    SendMessageResponse:
+      type: object
+      required: [idMessage]
+      properties:
+        idMessage:
+          type: string
+    DeleteNotificationResponse:
+      type: object
+      required: [result]
+      properties:
+        result:
+          type: boolean
+        reason:
+          type: string
+    Notification:
+      type: object
+      required: [receiptId, body]
+      properties:
+        receiptId:
+          type: integer
+        body:
+          $ref: '#/components/schemas/NotificationBody'
+    NotificationBody:
+      type: object
+      required: [typeWebhook, timestamp]
+      properties:
+        typeWebhook:
+          type: string
+          description: incomingMessageReceived, outgoingMessageReceived, outgoingAPIMessageReceived, stateInstanceChanged, ...
+          example: incomingMessageReceived
+        timestamp:
+          type: integer
+        idMessage:
+          type: string
+        senderData:
+          $ref: '#/components/schemas/SenderData'
+        messageData:
+          $ref: '#/components/schemas/MessageData'
+    SenderData:
+      type: object
+      required: [chatId, sender]
+      properties:
+        chatId:
+          type: string
+          example: '10000000'
+        chatName:
+          type: string
+        chatType:
+          type: string
+        sender:
+          type: string
+        senderName:
+          type: string
+        senderContactName:
+          type: string
+        senderPhoneNumber:
+          type: integer
+          example: 79876543210
+    MessageData:
+      type: object
+      required: [typeMessage]
+      properties:
+        typeMessage:
+          type: string
+          example: textMessage
+        textMessageData:
+          type: object
+          required: [textMessage]
+          properties:
+            textMessage:
+              type: string
+        extendedTextMessageData:
+          type: object
+          required: [text]
+          properties:
+            text:
+              type: string
