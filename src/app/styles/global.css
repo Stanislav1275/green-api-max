@@ -1,0 +1,271 @@
+@import '@fontsource-variable/roboto/wght.css';
+@import 'tailwindcss';
+
+/* `dark:` follows the OS unless the page pins a scheme with data-color-scheme */
+@custom-variant dark {
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-color-scheme='light']) *) {
+      @slot;
+    }
+  }
+
+  &:where([data-color-scheme='dark'], [data-color-scheme='dark'] *) {
+    @slot;
+  }
+}
+
+/*
+ * Design tokens taken from web.max.ru (theme "simple", chat background of theme "space").
+ * Naming follows shadcn/ui so components stay portable; MAX-only tokens are prefixed by purpose.
+ * Scheme: `prefers-color-scheme` by default, `<html data-color-scheme="light|dark">` overrides it.
+ */
+:root,
+[data-color-scheme='light'] {
+  color-scheme: light;
+
+  --background: #fff; /* background-primary */
+  --background-secondary: #f5f7fa; /* background-secondary */
+  --surface: #edeef2; /* background-surface */
+  --card: #fff; /* background-card */
+  --popover: #fff; /* float-primary-flat */
+  --foreground: #060708; /* text-primary */
+  --muted-foreground: #060708ad; /* text-secondary */
+  --subtle-foreground: #06070885; /* text-tertiary */
+  --muted: #0909090d; /* background-tertiary */
+  --hover: #f6f6f6; /* states-background-card-hover */
+  --border: #0c0d0e29; /* divider-primary */
+  --divider: #0c0d0e0f; /* divider-secondary */
+  --input: #09090914; /* input-background */
+  --ring: #007aff; /* stroke-themed */
+
+  --primary: #007aff; /* button-primary */
+  --primary-hover: #479fff; /* states-button-primary-hover */
+  --primary-pressed: #006ee5; /* states-button-primary-pressed */
+  --primary-disabled: #007aff7a; /* states-button-primary-disabled */
+  --primary-foreground: #fff;
+  --secondary: #e9ebf1; /* button-secondary */
+  --secondary-hover: #eeeff4;
+  --secondary-pressed: #e4e6ed;
+  --secondary-foreground: #060708;
+  --disabled-foreground: #6f7276a3; /* states-text-primary-disabled */
+  --link: #007aff; /* text-themed */
+  --link-hover: #479fff;
+  --destructive: #ff303c; /* button-negative */
+  --destructive-foreground: #fff;
+  --positive: #1abe43;
+
+  --chat-background: #fff; /* chat-background-background */
+  --writebar: #fff; /* writebar-input-flat */
+  --pattern: #007aff26; /* space: chat-background-pattern-color, softened */
+  --bubble-in: #f2f2f2;
+  --bubble-in-foreground: #060708;
+  --bubble-in-meta: #06070885;
+  --bubble-out-from: #17a8e5;
+  --bubble-out-via: #0b8ce8;
+  --bubble-out-to: #0070eb;
+  --bubble-out-foreground: #fff;
+  --bubble-out-meta: #ffffffa3;
+
+  /* brand gradient: MAX dark outgoing bubble, reused for the logo and the sign-in "aurora" */
+  --brand-1: #4429cc;
+  --brand-2: #2251e5;
+  --brand-3: #08c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-color-scheme='light']) {
+    color-scheme: dark;
+
+    --background: #17181c;
+    --background-secondary: #25262d;
+    --surface: #0f0f12;
+    --card: #25262d;
+    --popover: #1e1f24; /* float-primary-carver */
+    --foreground: #fff;
+    --muted-foreground: #fffc;
+    --subtle-foreground: #ffffffa3;
+    --muted: #ffffff17;
+    --hover: #32343d;
+    --border: #ffffff1f;
+    --divider: #ffffff0f;
+    --input: #ffffff17;
+    --ring: #007aff;
+
+    --primary: #007aff;
+    --primary-hover: #479fff;
+    --primary-pressed: #006ee5;
+    --primary-disabled: #ffffff1f;
+    --primary-foreground: #fff;
+    --secondary: #323234;
+    --secondary-hover: #4d4e62;
+    --secondary-pressed: #3c3e4c;
+    --secondary-foreground: #fff;
+    --disabled-foreground: #ffffff47;
+    --link: #007aff;
+    --link-hover: #479fff;
+    --destructive: #ce4257;
+    --destructive-foreground: #fff;
+    --positive: #2bc644;
+
+    --chat-background: #141414; /* space */
+    --writebar: #1e1f24;
+    --pattern: #505bc74d; /* space */
+    --bubble-in: #202022;
+    --bubble-in-foreground: #fff;
+    --bubble-in-meta: #ffffffa3;
+    --bubble-out-from: #4429cc;
+    --bubble-out-via: #2251e5;
+    --bubble-out-to: #08c;
+    --bubble-out-foreground: #fff;
+    --bubble-out-meta: #ffffffa3;
+  }
+}
+
+/* explicit dark scheme mirrors the media query above */
+[data-color-scheme='dark'] {
+  color-scheme: dark;
+
+  --background: #17181c;
+  --background-secondary: #25262d;
+  --surface: #0f0f12;
+  --card: #25262d;
+  --popover: #1e1f24;
+  --foreground: #fff;
+  --muted-foreground: #fffc;
+  --subtle-foreground: #ffffffa3;
+  --muted: #ffffff17;
+  --hover: #32343d;
+  --border: #ffffff1f;
+  --divider: #ffffff0f;
+  --input: #ffffff17;
+  --primary-disabled: #ffffff1f;
+  --secondary: #323234;
+  --secondary-hover: #4d4e62;
+  --secondary-pressed: #3c3e4c;
+  --secondary-foreground: #fff;
+  --disabled-foreground: #ffffff47;
+  --destructive: #ce4257;
+  --positive: #2bc644;
+  --chat-background: #141414;
+  --writebar: #1e1f24;
+  --pattern: #505bc74d;
+  --bubble-in: #202022;
+  --bubble-in-foreground: #fff;
+  --bubble-in-meta: #ffffffa3;
+  --bubble-out-from: #4429cc;
+  --bubble-out-via: #2251e5;
+  --bubble-out-to: #08c;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-background-secondary: var(--background-secondary);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-popover: var(--popover);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle-foreground: var(--subtle-foreground);
+  --color-hover: var(--hover);
+  --color-border: var(--border);
+  --color-divider: var(--divider);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-pressed: var(--primary-pressed);
+  --color-primary-disabled: var(--primary-disabled);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-pressed: var(--secondary-pressed);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-disabled-foreground: var(--disabled-foreground);
+  --color-link: var(--link);
+  --color-link-hover: var(--link-hover);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-positive: var(--positive);
+  --color-chat-background: var(--chat-background);
+  --color-writebar: var(--writebar);
+  --color-pattern: var(--pattern);
+  --color-bubble-in: var(--bubble-in);
+  --color-bubble-in-foreground: var(--bubble-in-foreground);
+  --color-bubble-in-meta: var(--bubble-in-meta);
+  --color-bubble-out-foreground: var(--bubble-out-foreground);
+  --color-bubble-out-meta: var(--bubble-out-meta);
+  --color-brand-1: var(--brand-1);
+  --color-brand-2: var(--brand-2);
+  --color-brand-3: var(--brand-3);
+
+  /* MAX radii: border-radius-common-* */
+  --radius-sm: 0.5rem; /* s: 8px */
+  --radius-md: 0.625rem; /* m-half: 10px, small buttons */
+  --radius-lg: 0.75rem; /* m: 12px, inputs, medium buttons */
+  --radius-xl: 1rem; /* l: 16px, large buttons, chat cells, bubbles */
+  --radius-2xl: 1.25rem; /* xl: 20px, cards */
+
+  --font-sans: 'Roboto Variable', 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+@utility bg-bubble-out {
+  background-image: linear-gradient(
+    135deg,
+    var(--bubble-out-from),
+    var(--bubble-out-via) 55%,
+    var(--bubble-out-to)
+  );
+}
+
+/* original space doodles tinted by --pattern, like the "space" chat theme of MAX */
+@utility bg-space-pattern {
+  position: relative;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-color: var(--pattern);
+    mask: url('./space-pattern.svg') repeat top left / 240px;
+  }
+}
+
+/* sign-in card glow: brand gradient blurred into the top of the card */
+@utility bg-aurora {
+  background:
+    radial-gradient(
+      60% 45% at 15% 0%,
+      color-mix(in srgb, var(--brand-1) 70%, transparent),
+      transparent
+    ),
+    radial-gradient(
+      55% 40% at 55% 0%,
+      color-mix(in srgb, var(--brand-2) 45%, transparent),
+      transparent
+    ),
+    radial-gradient(
+      50% 45% at 90% 5%,
+      color-mix(in srgb, var(--brand-3) 50%, transparent),
+      transparent
+    );
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html,
+  body,
+  #root {
+    @apply h-full;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+}
