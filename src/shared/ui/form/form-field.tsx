@@ -56,7 +56,6 @@ export const FormField = ({
             value={(field.value as string | undefined) ?? ''}
             onChange={field.onChange}
             onBlur={field.onBlur}
-            disabled={field.disabled ?? controlProps.disabled}
           />
           <FormMessage>{fieldState.error?.message}</FormMessage>
         </Field.Root>
