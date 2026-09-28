@@ -1,17 +1,20 @@
 import { Globe } from 'lucide-react'
 
-import { type Locale, LOCALES, useLocaleStore } from '@/shared/lib/i18n'
+import { type Locale, LOCALES, useLocaleStore, useTranslation } from '@/shared/lib/i18n'
 import { Button } from '@/shared/ui/button'
 import { Menu } from '@/shared/ui/menu'
 
 export const LanguageMenu = () => {
+  const { t } = useTranslation()
   const locale = useLocaleStore((state) => state.locale)
   const setLocale = useLocaleStore((state) => state.setLocale)
 
   return (
     <Menu.Root>
-      <Menu.Trigger render={<Button variant="ghost" size="icon" aria-label="Язык интерфейса" />}>
-        <Globe size="md" />
+      <Menu.Trigger
+        render={<Button variant="ghost" size="icon" aria-label={t('common.language')} />}
+      >
+        <Globe size={24} />
       </Menu.Trigger>
       <Menu.Content>
         <Menu.RadioGroup

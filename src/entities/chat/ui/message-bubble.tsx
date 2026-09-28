@@ -2,18 +2,21 @@ import { Check, CircleAlert, Clock } from 'lucide-react'
 
 import { cn } from '@/shared/lib/cn'
 import { formatTime } from '@/shared/lib/format'
+import { useTranslation } from '@/shared/lib/i18n'
 
 import type { Message } from '../model/types'
 
 const STATUS_ICON = {
-  pending: <Clock aria-label="Отправляется" className="size-3.5" />,
-  sent: <Check aria-label="Отправлено" className="size-3.5" />,
-  failed: <CircleAlert aria-label="Не отправлено" className="size-3.5 text-[#ffb8b8]" />,
+  pending: Clock,
+  sent: Check,
+  failed: CircleAlert,
 }
 
 /** MAX bubble: 16px radius, gradient for own messages, time tucked into the last line. */
 export const MessageBubble = ({ message }: { message: Message }) => {
+  const { t, i18n } = useTranslation()
   const outgoing = message.direction === 'out'
+  const StatusIcon = STATUS_ICON[message.status]
   return (
     <li
       data-direction={message.direction}
@@ -35,8 +38,13 @@ export const MessageBubble = ({ message }: { message: Message }) => {
           outgoing ? 'text-bubble-out-meta' : 'text-bubble-in-meta',
         )}
       >
-        {formatTime(message.timestamp)}
-        {outgoing ? STATUS_ICON[message.status] : null}
+        {formatTime(message.timestamp, i18n.language)}
+        {outgoing ? (
+          <StatusIcon
+            aria-label={t(`chat.status.${message.status}`)}
+            className={cn('size-3.5', message.status === 'failed' && 'text-[#ffb8b8]')}
+          />
+        ) : null}
       </p>
     </li>
   )

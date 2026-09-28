@@ -12,7 +12,7 @@ export const MAX_MESSAGE_LENGTH = invariant(
 )
 
 export const sendMessageSchema = z.object({
-  text: message.trim().min(1, 'Введите сообщение').prefault(''),
+  text: message.trim().min(1, 'validation.messageRequired').prefault(''),
 })
 
 export type SendMessageInput = z.input<typeof sendMessageSchema>

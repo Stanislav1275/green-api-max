@@ -1,5 +1,6 @@
 import { cn } from '@/shared/lib/cn'
 import { formatTime } from '@/shared/lib/format'
+import { useTranslation } from '@/shared/lib/i18n'
 
 import { getChatTitle } from '../lib/chat-title'
 import type { Chat } from '../model/types'
@@ -12,7 +13,8 @@ type ChatListItemProps = {
 }
 
 export const ChatListItem = ({ chat, active, onSelect }: ChatListItemProps) => {
-  const title = getChatTitle(chat)
+  const { t, i18n } = useTranslation()
+  const title = getChatTitle(chat, t)
   const lastMessage = chat.messages.at(-1)
 
   return (
@@ -33,14 +35,16 @@ export const ChatListItem = ({ chat, active, onSelect }: ChatListItemProps) => {
           <span className="truncate text-[15px] font-medium">{title}</span>
           {lastMessage ? (
             <span className="shrink-0 text-xs text-subtle-foreground">
-              {formatTime(lastMessage.timestamp)}
+              {formatTime(lastMessage.timestamp, i18n.language)}
             </span>
           ) : null}
         </span>
         <span className="truncate text-sm text-subtle-foreground">
           {lastMessage
-            ? `${lastMessage.direction === 'out' ? 'Вы: ' : ''}${lastMessage.text}`
-            : 'Нет сообщений'}
+            ? lastMessage.direction === 'out'
+              ? t('chats.you', { text: lastMessage.text })
+              : lastMessage.text
+            : t('chats.noMessages')}
         </span>
       </span>
     </button>

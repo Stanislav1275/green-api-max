@@ -1,6 +1,7 @@
 import type { ComponentProps } from 'react'
 
 import { cn } from '@/shared/lib/cn'
+import { translate } from '@/shared/lib/i18n'
 
 import { Field } from '../field'
 
@@ -17,6 +18,6 @@ export const FormMessage = ({
       className={cn('px-4 text-[13px] leading-snug text-destructive', className)}
       {...props}
     >
-      {children}
+      {typeof children === 'string' ? translate(children) : children}
     </Field.Error>
   ) : null
