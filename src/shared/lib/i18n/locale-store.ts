@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
+import { i18n } from './i18n'
+
 export const LOCALES = [
   { value: 'ru', label: 'Русский' },
   { value: 'en', label: 'English' },
@@ -13,18 +15,19 @@ type LocaleState = {
   setLocale: (locale: Locale) => void
 }
 
-const syncDocumentLang = (locale: Locale) => {
+const applyLocale = (locale: Locale) => {
+  void i18n.changeLanguage(locale)
   document.documentElement.lang = locale
 }
 
-/** Chosen UI language; translations read it (see the i18n task), `<html lang>` follows it. */
+/** Chosen UI language (Russian by default, like MAX); drives i18next and `<html lang>`. */
 export const useLocaleStore = create<LocaleState>()(
   persist(
     (set) => ({
       locale: 'ru',
       setLocale: (locale) => {
         set({ locale })
-        syncDocumentLang(locale)
+        applyLocale(locale)
       },
     }),
     {
@@ -33,7 +36,7 @@ export const useLocaleStore = create<LocaleState>()(
       partialize: ({ locale }) => ({ locale }),
       onRehydrateStorage: () => (state) => {
         if (state) {
-          syncDocumentLang(state.locale)
+          applyLocale(state.locale)
         }
       },
     },
