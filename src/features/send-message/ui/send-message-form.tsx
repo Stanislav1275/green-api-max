@@ -1,25 +1,25 @@
 import { SendHorizontal } from 'lucide-react'
-import type { KeyboardEvent } from 'react'
 
 import type { Chat } from '@/entities/chat'
 import { useZodForm } from '@/shared/lib/form'
+import { useHotKey } from '@/shared/lib/hotkey'
 import { Form, FormField, FormSubmit } from '@/shared/ui/form'
 import { Textarea } from '@/shared/ui/textarea'
 
 import { MAX_MESSAGE_LENGTH, sendMessageSchema } from '../model/send-message-schema'
 import { useSendMessage } from '../model/use-send-message'
 
-// Enter sends, Shift+Enter breaks the line, IME composition is left alone
-const submitOnEnter = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-  if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
-    event.preventDefault()
-    event.currentTarget.form?.requestSubmit()
+const submitForm = (event: KeyboardEvent) => {
+  if (event.target instanceof HTMLTextAreaElement) {
+    event.target.form?.requestSubmit()
   }
 }
 
 export const SendMessageForm = ({ chat }: { chat: Chat }) => {
   const sendMessage = useSendMessage()
   const form = useZodForm(sendMessageSchema)
+  // Enter sends; Shift+Enter is not matched and keeps inserting a line break
+  const handleKeyDown = useHotKey<HTMLTextAreaElement>([['Enter', submitForm]])
 
   return (
     <Form
@@ -41,7 +41,7 @@ export const SendMessageForm = ({ chat }: { chat: Chat }) => {
             placeholder="Сообщение"
             maxLength={MAX_MESSAGE_LENGTH}
             className="rounded-2xl"
-            onKeyDown={submitOnEnter}
+            onKeyDown={handleKeyDown}
           />
         }
       />
