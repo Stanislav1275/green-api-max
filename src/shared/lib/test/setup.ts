@@ -3,6 +3,8 @@ import '@testing-library/jest-dom/vitest'
 import { cleanup } from '@testing-library/react'
 import type * as Zustand from 'zustand'
 
+import { i18n } from '@/shared/lib/i18n'
+
 import { greenApiMock, server } from './server'
 
 const storeResets = vi.hoisted(() => new Set<() => void>())
@@ -38,6 +40,7 @@ afterEach(() => {
   storeResets.forEach((reset) => {
     reset()
   })
+  void i18n.changeLanguage('ru')
 })
 
 afterAll(() => {

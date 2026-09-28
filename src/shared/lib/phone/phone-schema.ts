@@ -6,11 +6,11 @@ import { normalizePhone } from './phone'
 export const phoneSchema = z
   .string()
   .trim()
-  .min(1, 'Введите номер телефона')
+  .min(1, 'validation.phoneRequired')
   .transform((value, context) => {
     const phone = normalizePhone(value)
     if (!phone) {
-      context.addIssue({ code: 'custom', message: 'Введите номер в формате +7 999 123-45-67' })
+      context.addIssue({ code: 'custom', message: 'validation.phoneFormat' })
       return z.NEVER
     }
     return phone

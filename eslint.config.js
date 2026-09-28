@@ -3,6 +3,7 @@ import eslintReact from '@eslint-react/eslint-plugin'
 import prettier from 'eslint-config-prettier'
 import boundaries from 'eslint-plugin-boundaries'
 import checkFile from 'eslint-plugin-check-file'
+import i18next from 'eslint-plugin-i18next'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
@@ -118,6 +119,42 @@ export default defineConfig([
         { ignoreMiddleExtensions: true },
       ],
       'check-file/folder-naming-convention': ['error', { 'src/**/': 'KEBAB_CASE' }],
+    },
+  },
+  {
+    // every user-visible string goes through the ru/en dictionaries
+    files: ['src/**/*.tsx'],
+    ignores: ['src/**/*.test.tsx', 'src/app/stories/**'],
+    plugins: { i18next },
+    rules: {
+      'i18next/no-literal-string': [
+        'error',
+        {
+          mode: 'jsx-only',
+          'jsx-attributes': { include: ['aria-label', 'placeholder', 'title', 'alt'] },
+        },
+      ],
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'react-i18next',
+              message: 'Import from @/shared/lib/i18n: it guarantees i18next is initialized.',
+            },
+          ],
+          patterns: [
+            {
+              group: ['@/*/*/*', '!@/shared/*/*'],
+              message: 'Import slices only through their public API (index.ts).',
+            },
+            {
+              group: ['../*/../*', '../../*'],
+              message: 'Use the @/ alias for cross-slice imports.',
+            },
+          ],
+        },
+      ],
     },
   },
   {

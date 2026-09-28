@@ -1,3 +1,5 @@
+import { LucideProvider } from 'lucide-react'
+
 import { useCredentials } from '@/entities/session'
 import { MessengerPage } from '@/pages/messenger'
 import { SignInPage } from '@/pages/sign-in'
@@ -11,9 +13,12 @@ const Screen = () => {
 }
 
 export const App = () => (
-  <ToastProvider>
-    <QueryProvider>
-      <Screen />
-    </QueryProvider>
-  </ToastProvider>
+  // 20px is the default icon size; `size` on an icon still overrides it
+  <LucideProvider size={20} className="shrink-0">
+    <ToastProvider>
+      <QueryProvider>
+        <Screen />
+      </QueryProvider>
+    </ToastProvider>
+  </LucideProvider>
 )

@@ -11,4 +11,5 @@ export type AppError =
   /** anything we could not recognise */
   | { kind: 'unknown'; message: string }
 
-export const UNKNOWN_ERROR_MESSAGE = 'Произошла неизвестная серверная ошибка'
+/** `message` holds a translation key, or raw text when the server explained itself */
+export const UNKNOWN_ERROR_MESSAGE = 'errors.unknown'

@@ -36,12 +36,10 @@ describe('phoneSchema', () => {
   })
 
   it('asks for a number when empty', () => {
-    expect(phoneSchema.safeParse('').error?.issues[0]?.message).toBe('Введите номер телефона')
+    expect(phoneSchema.safeParse('').error?.issues[0]?.message).toBe('validation.phoneRequired')
   })
 
   it('explains the format when invalid', () => {
-    expect(phoneSchema.safeParse('123').error?.issues[0]?.message).toBe(
-      'Введите номер в формате +7 999 123-45-67',
-    )
+    expect(phoneSchema.safeParse('123').error?.issues[0]?.message).toBe('validation.phoneFormat')
   })
 })

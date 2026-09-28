@@ -2,10 +2,13 @@ import { Toast } from '@base-ui/react/toast'
 import { X } from 'lucide-react'
 import type { ReactNode } from 'react'
 
+import { useTranslation } from '@/shared/lib/i18n'
+
 import { toastManager } from './toast-manager'
 
 const ToastList = () => {
   const { toasts } = Toast.useToastManager()
+  const { t } = useTranslation()
   return toasts.map((item) => (
     <Toast.Root
       key={item.id}
@@ -17,7 +20,7 @@ const ToastList = () => {
         <Toast.Description className="text-sm text-muted-foreground" />
       </Toast.Content>
       <Toast.Close
-        aria-label="Закрыть"
+        aria-label={t('common.close')}
         className="absolute top-3 right-3 rounded-md p-1 text-subtle-foreground hover:bg-muted"
       >
         <X />

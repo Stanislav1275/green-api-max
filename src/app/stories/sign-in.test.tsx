@@ -32,21 +32,31 @@ describe('US-1: вход по данным GREEN-API', () => {
     expect(screen.getByText(`Инстанс ${TEST_CREDENTIALS.idInstance}`)).toBeInTheDocument()
   })
 
-  it('TC-1.2: пустые поля подсвечиваются, запрос не отправляется', async () => {
+  it('TC-1.2: пока поля пустые, кнопка «Войти» неактивна и запрос не отправляется', async () => {
     const requests: string[] = []
     server.events.on('request:start', ({ request }) => {
       requests.push(request.url)
     })
-    const { user } = renderApp()
+    const { user, fillSignIn } = renderApp()
+    const submit = screen.getByRole('button', { name: 'Войти' })
 
+    expect(submit).toBeDisabled()
+    await fillSignIn({ apiUrl: TEST_CREDENTIALS.apiUrl, idInstance: TEST_CREDENTIALS.idInstance })
+    expect(submit).toBeDisabled()
+    await user.type(screen.getByLabelText('apiTokenInstance'), '   ')
+    expect(submit).toBeDisabled()
+
+    expect(requests).toEqual([])
+    server.events.removeAllListeners()
+  })
+
+  it('TC-1.2b: неверный формат показывает ошибку под полем после отправки', async () => {
+    const { user, fillSignIn } = renderApp()
+    await fillSignIn({ ...TEST_CREDENTIALS, apiUrl: 'не ссылка' })
     await user.click(screen.getByRole('button', { name: 'Войти' }))
 
     expect(await screen.findByText('Укажите apiUrl из личного кабинета')).toBeInTheDocument()
-    expect(screen.getByText('idInstance состоит только из цифр')).toBeInTheDocument()
-    expect(screen.getByText('Укажите apiTokenInstance')).toBeInTheDocument()
     expect(screen.getByLabelText('apiUrl')).toHaveAttribute('aria-invalid', 'true')
-    expect(requests).toEqual([])
-    server.events.removeAllListeners()
   })
 
   it('TC-1.3: idInstance с буквами не принимается', async () => {

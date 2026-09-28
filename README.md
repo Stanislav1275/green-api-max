@@ -68,6 +68,14 @@ HTTP API получает уведомления, только если в [на
 - `const { resolveError } = useFormResolver(form)` — для react-hook-form: ошибки полей из ответа уходят в `form.setError`, остальное — в toast.
 - Все мутации без `meta.manualErrorHandling` показывают toast автоматически через `MutationCache.onError`.
 
+## Языки
+
+Русский и английский: глобус в шапке, выбор запоминается, `<html lang>` меняется вместе с ним.
+
+- Словари — [`ru.json`](src/shared/lib/i18n/locales/ru.json) и [`en.json`](src/shared/lib/i18n/locales/en.json); ключи типизированы по `ru.json`, опечатка в `t('…')` — ошибка компиляции.
+- zod-схемы и нормализованные ошибки отдают ключи, перевод — при показе; сырой текст от сервера показывается как есть.
+- ESLint (`i18next/no-literal-string`) не пропускает непереведённый текст в JSX и в `aria-label` / `placeholder` / `title` / `alt`.
+
 ## Надёжность
 
 - Каждый запрос обрывается через **30 с** (`AbortSignal.timeout`) — пользователь видит «Сервер не ответил».

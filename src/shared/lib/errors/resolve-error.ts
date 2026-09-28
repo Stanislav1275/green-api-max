@@ -1,9 +1,10 @@
 import { type AppError, normalizeError } from '@/shared/api'
+import { translate } from '@/shared/lib/i18n'
 import { toast } from '@/shared/ui/toast'
 
 export const showErrorToast = (appError: AppError) => {
   if (appError.kind !== 'aborted') {
-    toast.error(appError.message)
+    toast.error(translate(appError.message))
   }
 }
 

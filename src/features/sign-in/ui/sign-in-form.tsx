@@ -1,20 +1,16 @@
 import { credentialsSchema } from '@/entities/session'
 import { useZodForm } from '@/shared/lib/form'
+import { useTranslation } from '@/shared/lib/i18n'
 import { Alert } from '@/shared/ui/alert'
 import { Form, FormField, FormSubmit } from '@/shared/ui/form'
 
 import { InstanceNotReadyError, useSignIn } from '../model/use-sign-in'
-import type { InstanceProblem } from '../model/verify-instance'
 
-const PROBLEM_TEXT: Record<InstanceProblem, string> = {
-  notAuthorized: 'Инстанс не авторизован в MAX — отсканируйте QR-код в личном кабинете.',
-  webhookUrlSet:
-    'В настройках инстанса задан webhookUrl — очистите его, иначе HTTP API не получит уведомления.',
-  notificationsDisabled:
-    'Включите входящие уведомления и уведомления об отправке через API в настройках инстанса.',
-}
+/** web.max.ru sign-in field: 52px tall, 16px radius, 17px text */
+const FIELD_CLASS = 'h-13 rounded-xl px-4 md:text-[17px]'
 
 export const SignInForm = () => {
+  const { t } = useTranslation()
   const signIn = useSignIn()
   const form = useZodForm(credentialsSchema, {
     // deploy-time prefill is a UI concern, so it is not baked into the entity schema
@@ -41,7 +37,8 @@ export const SignInForm = () => {
         label="apiUrl"
         hideLabel
         type="url"
-        placeholder="apiUrl — https://…api.green-api.com"
+        placeholder={t('signIn.apiUrlPlaceholder')}
+        className={FIELD_CLASS}
         autoComplete="url"
       />
       <FormField
@@ -49,7 +46,8 @@ export const SignInForm = () => {
         label="idInstance"
         hideLabel
         inputMode="numeric"
-        placeholder="idInstance"
+        placeholder={t('signIn.idInstancePlaceholder')}
+        className={FIELD_CLASS}
         autoComplete="username"
       />
       <FormField
@@ -57,28 +55,27 @@ export const SignInForm = () => {
         label="apiTokenInstance"
         hideLabel
         type="password"
-        placeholder="apiTokenInstance"
+        placeholder={t('signIn.apiTokenInstancePlaceholder')}
+        className={FIELD_CLASS}
         autoComplete="current-password"
       />
-      <p className="-mt-1 px-4 text-[13px] leading-snug text-subtle-foreground">
-        Данные инстанса есть в личном кабинете GREEN-API — нажмите «?», чтобы узнать где
-      </p>
+      <p className="-mt-1 px-3 text-sm leading-snug text-subtle-foreground">{t('signIn.hint')}</p>
 
       {signIn.error instanceof InstanceNotReadyError ? (
         <Alert.Root variant="warning">
-          <Alert.Title>Инстанс не готов к работе</Alert.Title>
+          <Alert.Title>{t('signIn.notReady')}</Alert.Title>
           <Alert.Description>
             <ul className="list-disc pl-4">
               {signIn.error.problems.map((problem) => (
-                <li key={problem}>{PROBLEM_TEXT[problem]}</li>
+                <li key={problem}>{t(`signIn.problems.${problem}`)}</li>
               ))}
             </ul>
           </Alert.Description>
         </Alert.Root>
       ) : null}
 
-      <FormSubmit size="lg" className="mt-3 w-full">
-        Войти
+      <FormSubmit requireFilled size="lg" className="mt-3 w-full">
+        {t('signIn.submit')}
       </FormSubmit>
     </Form>
   )

@@ -43,7 +43,8 @@ describe('splitPhone', () => {
 })
 
 it('matchesCountry finds by name and by dial code', () => {
-  expect(matchesCountry(country('by'), 'бел')).toBe(true)
-  expect(matchesCountry(country('by'), '+375')).toBe(true)
-  expect(matchesCountry(country('by'), 'рос')).toBe(false)
+  expect(matchesCountry(country('by'), 'Беларусь', 'бел')).toBe(true)
+  expect(matchesCountry(country('by'), 'Belarus', 'bel')).toBe(true)
+  expect(matchesCountry(country('by'), 'Беларусь', '+375')).toBe(true)
+  expect(matchesCountry(country('by'), 'Беларусь', 'рос')).toBe(false)
 })
