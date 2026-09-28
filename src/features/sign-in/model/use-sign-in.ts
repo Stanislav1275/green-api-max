@@ -25,5 +25,6 @@ export const useSignIn = () => {
       return credentials
     },
     onSuccess: signIn,
+    meta: { manualErrorHandling: true },
   })
 }

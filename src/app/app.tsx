@@ -1,6 +1,7 @@
 import { useCredentials } from '@/entities/session'
 import { MessengerPage } from '@/pages/messenger'
 import { SignInPage } from '@/pages/sign-in'
+import { ToastProvider } from '@/shared/ui/toast'
 
 import { QueryProvider } from './query/query-provider'
 
@@ -10,7 +11,9 @@ const Screen = () => {
 }
 
 export const App = () => (
-  <QueryProvider>
-    <Screen />
-  </QueryProvider>
+  <ToastProvider>
+    <QueryProvider>
+      <Screen />
+    </QueryProvider>
+  </ToastProvider>
 )
