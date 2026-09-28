@@ -245,6 +245,8 @@
   display: inline-block;
   mask-size: 100% 100%;
   mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
   background: conic-gradient(
     from var(--logo-angle) at 50% 55%,
     #13c8ff,

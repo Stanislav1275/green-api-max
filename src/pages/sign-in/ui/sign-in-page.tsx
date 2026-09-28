@@ -4,7 +4,7 @@ import { Trans, useTranslation } from '@/shared/lib/i18n'
 import { Logo } from '@/shared/ui/logo'
 
 /**
- * web.max.ru sign-in layout: a 36rem card on the space pattern on desktop,
+ * web.max.ru sign-in layout: a 580×696 card on the space pattern on desktop,
  * a full-screen form with the logo in the header on phones.
  */
 export const SignInPage = () => {
@@ -14,7 +14,7 @@ export const SignInPage = () => {
     <main className="min-h-full bg-background-secondary md:bg-space-pattern md:grid md:place-items-center md:bg-chat-background md:p-8">
       <section
         aria-labelledby="sign-in-title"
-        className="relative flex min-h-dvh flex-col md:min-h-[43rem] md:w-[36rem] md:overflow-hidden md:rounded-[1.75rem] md:border md:border-divider md:bg-background md:shadow-2xl"
+        className="relative flex min-h-dvh flex-col md:h-[696px] md:min-h-0 md:w-[580px] md:overflow-hidden md:rounded-[1.75rem] md:border md:border-divider md:bg-background md:shadow-2xl"
       >
         <div aria-hidden className="aurora max-md:hidden">
           <span className="-top-24 -left-16 size-80 bg-brand-1" />
@@ -28,8 +28,8 @@ export const SignInPage = () => {
           <SignInHelp />
         </header>
 
-        <div className="relative mx-auto flex w-full flex-1 flex-col px-3 md:max-w-[21rem] md:px-0 md:pb-8">
-          <Logo size={44} className="mx-auto mt-6 mb-12 max-md:hidden" />
+        <div className="relative mx-auto flex min-h-0 w-full flex-1 flex-col px-3 md:max-w-[21rem] md:overflow-y-auto md:px-0 md:pb-8">
+          <Logo size={44} className="mx-auto mt-2 mb-9 max-md:hidden" />
           <h1
             id="sign-in-title"
             className="mt-4 mb-6 text-center text-[21px] leading-[26px] font-semibold text-balance md:mt-0"
@@ -39,7 +39,7 @@ export const SignInPage = () => {
 
           <SignInForm />
 
-          <footer className="mt-auto grid gap-4 pt-10 pb-6 text-center text-sm leading-snug text-subtle-foreground md:pb-0">
+          <footer className="mt-auto grid gap-4 pt-8 pb-6 text-center text-sm leading-snug text-subtle-foreground md:pb-0">
             <p className="text-balance">
               <Trans
                 i18nKey="signIn.disclaimer"
