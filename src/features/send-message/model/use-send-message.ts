@@ -4,8 +4,6 @@ import { useChatStore } from '@/entities/chat'
 import { useGreenApi } from '@/entities/session'
 import { phoneToChatId } from '@/shared/lib/phone'
 
-export const MAX_MESSAGE_LENGTH = 4000
-
 type SendMessageVariables = {
   chatId: string
   /** phone digits or a MAX numeric chat id */
