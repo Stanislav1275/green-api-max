@@ -37,7 +37,7 @@ const RadioItem = ({
   >
     {children}
     <BaseMenu.RadioItemIndicator className="text-link">
-      <Check className="size-4" />
+      <Check />
     </BaseMenu.RadioItemIndicator>
   </BaseMenu.RadioItem>
 )

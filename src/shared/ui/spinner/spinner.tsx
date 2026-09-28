@@ -7,7 +7,7 @@ export const Spinner = ({ className, ...props }: ComponentProps<'svg'>) => (
   <LoaderCircle
     role="status"
     aria-label="Загрузка"
-    className={cn('size-4 animate-spin', className)}
+    className={cn('animate-spin', className)}
     {...props}
   />
 )

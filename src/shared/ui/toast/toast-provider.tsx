@@ -20,7 +20,7 @@ const ToastList = () => {
         aria-label="Закрыть"
         className="absolute top-3 right-3 rounded-md p-1 text-subtle-foreground hover:bg-muted"
       >
-        <X className="size-4" />
+        <X />
       </Toast.Close>
     </Toast.Root>
   ))

@@ -27,7 +27,7 @@ export const Logo = ({ className }: { className?: string }) => {
         <circle cx="16" cy="16" r="5.5" fill="none" stroke="#fff" strokeWidth="3" />
       </svg>
       <span>
-        max<span className="text-subtle-foreground">·chat</span>
+        MAX<span className="text-lg text-subtle-foreground"></span>
       </span>
     </span>
   )

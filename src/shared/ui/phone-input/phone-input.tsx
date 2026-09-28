@@ -68,7 +68,7 @@ export const PhoneInput = ({
             <span aria-hidden>{country.flag}</span>
             <span>+{country.dialCode}</span>
             <Combobox.Icon className="text-subtle-foreground transition-transform data-popup-open:rotate-180">
-              <ChevronDown className="size-4" />
+              <ChevronDown />
             </Combobox.Icon>
           </Combobox.Trigger>
           <Combobox.Portal>
@@ -78,10 +78,10 @@ export const PhoneInput = ({
                 className="w-80 max-w-[var(--available-width)] origin-[var(--transform-origin)] rounded-xl bg-popover p-2 shadow-xl ring-1 ring-divider transition-[scale,opacity] duration-150 data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0"
               >
                 <div className="relative">
-                  <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-subtle-foreground" />
+                  <Search className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-subtle-foreground" />
                   <Combobox.Input
                     placeholder="Найти страну"
-                    className="h-10 w-full rounded-lg bg-input pr-3 pl-9 text-[15px] outline-none placeholder:text-subtle-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                    className="h-10 w-full rounded-lg bg-input pr-3 pl-10 text-[15px] outline-none placeholder:text-subtle-foreground focus-visible:ring-2 focus-visible:ring-ring"
                   />
                 </div>
                 <Combobox.Empty className="px-3 py-4 text-center text-sm text-subtle-foreground empty:hidden">
