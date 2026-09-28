@@ -2,8 +2,10 @@ import { credentialsSchema } from '@/entities/session'
 import { useZodForm } from '@/shared/lib/form'
 import { useTranslation } from '@/shared/lib/i18n'
 import { Alert } from '@/shared/ui/alert'
+import { Button } from '@/shared/ui/button'
 import { Form, FormField, FormSubmit } from '@/shared/ui/form'
 
+import { DEMO_CREDENTIALS, DEMO_HINT_FIELDS, IS_DEMO } from '../model/demo-credentials'
 import { InstanceNotReadyError, useSignIn } from '../model/use-sign-in'
 
 /** web.max.ru sign-in field: 52px tall, 16px radius, 17px text */
@@ -32,6 +34,33 @@ export const SignInForm = () => {
         }
       }}
     >
+      {IS_DEMO ? (
+        <Alert.Root role="note" className="mb-1">
+          <Alert.Title>{t('signIn.demo.title')}</Alert.Title>
+          <Alert.Description>
+            <p>{t('signIn.demo.description')}</p>
+            <dl className="font-mono text-xs">
+              {DEMO_HINT_FIELDS.map((key) => (
+                <div key={key}>
+                  <dt className="inline">{`${key}: `}</dt>
+                  <dd className="inline">{DEMO_CREDENTIALS[key]}</dd>
+                </div>
+              ))}
+            </dl>
+          </Alert.Description>
+          <Button
+            variant="link"
+            size="inline"
+            className="justify-self-start text-sm"
+            onClick={() => {
+              form.reset(DEMO_CREDENTIALS)
+            }}
+          >
+            {t('signIn.demo.fill')}
+          </Button>
+        </Alert.Root>
+      ) : null}
+
       <FormField
         name="apiUrl"
         label="apiUrl"
