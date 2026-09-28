@@ -234,24 +234,71 @@
   }
 }
 
-/* sign-in card glow: brand gradient blurred into the top of the card */
-@utility bg-aurora {
-  background:
-    radial-gradient(
-      60% 45% at 15% 0%,
-      color-mix(in srgb, var(--brand-1) 70%, transparent),
-      transparent
-    ),
-    radial-gradient(
-      55% 40% at 55% 0%,
-      color-mix(in srgb, var(--brand-2) 45%, transparent),
-      transparent
-    ),
-    radial-gradient(
-      50% 45% at 90% 5%,
-      color-mix(in srgb, var(--brand-3) 50%, transparent),
-      transparent
-    );
+/* animated angle for the logo gradient (registered, so it interpolates smoothly) */
+@property --logo-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@utility logo-mark {
+  display: inline-block;
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  background: conic-gradient(
+    from var(--logo-angle) at 50% 55%,
+    #13c8ff,
+    #2f6bff,
+    #7a3cff,
+    #d23cff,
+    #7a3cff,
+    #2f6bff,
+    #13c8ff
+  );
+  animation: logo-spin 8s linear infinite;
+}
+
+@keyframes logo-spin {
+  to {
+    --logo-angle: 360deg;
+  }
+}
+
+/* sign-in "aurora": blurred brand blobs drifting at the top of the card */
+@utility aurora {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 22rem;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, #000 35%, transparent);
+
+  & > span {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(56px);
+    opacity: 0.85;
+    animation: aurora-drift 16s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes aurora-drift {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(12%, 8%) scale(1.15);
+  }
+  100% {
+    transform: translate(-10%, 4%) scale(0.95);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-mark,
+  .aurora > span {
+    animation: none;
+  }
 }
 
 @layer base {
