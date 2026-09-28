@@ -6,5 +6,5 @@ export type {
   Settings,
   StateInstance,
 } from './gen/types'
-export { notificationBodySchema } from './gen/zod'
+export { notificationBodySchema, sendMessageRequestSchema } from './gen/zod'
 export { createGreenApi, type GreenApi, type GreenApiCredentials } from './green-api'
