@@ -1,11 +1,10 @@
-import { useState } from 'react'
-import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
 
-import { credentialsSchema } from '@/entities/session'
+import { type Credentials, type CredentialsInput, credentialsSchema } from '@/entities/session'
 import { Alert } from '@/shared/ui/alert'
 import { Button } from '@/shared/ui/button'
-import { Field } from '@/shared/ui/field'
-import { Form } from '@/shared/ui/form'
+import { FormField } from '@/shared/ui/form'
 import { Spinner } from '@/shared/ui/spinner'
 
 import { InstanceNotReadyError, useSignIn } from '../model/use-sign-in'
@@ -19,46 +18,50 @@ const PROBLEM_TEXT: Record<InstanceProblem, string> = {
     'Включите входящие уведомления и уведомления об отправке через API в настройках инстанса.',
 }
 
-const DEFAULT_API_URL = import.meta.env.VITE_DEFAULT_API_URL ?? ''
-
 export const SignInForm = () => {
-  const [errors, setErrors] = useState<Record<string, string[]>>({})
   const signIn = useSignIn()
-
-  const handleSubmit = (values: Record<string, unknown>) => {
-    const parsed = credentialsSchema.safeParse(values)
-    if (!parsed.success) {
-      setErrors(z.flattenError(parsed.error).fieldErrors)
-      return
-    }
-    setErrors({})
-    signIn.mutate(parsed.data)
-  }
+  const { control, handleSubmit } = useForm<CredentialsInput, unknown, Credentials>({
+    resolver: zodResolver(credentialsSchema),
+    defaultValues: {
+      apiUrl: import.meta.env.VITE_DEFAULT_API_URL ?? '',
+      idInstance: '',
+      apiTokenInstance: '',
+    },
+  })
 
   return (
-    <Form errors={errors} onFormSubmit={handleSubmit} noValidate>
-      <Field.Root name="apiUrl">
-        <Field.Label>apiUrl</Field.Label>
-        <Field.Control
-          type="url"
-          defaultValue={DEFAULT_API_URL}
-          placeholder="https://3100.api.green-api.com/v3"
-          autoComplete="url"
-        />
-        <Field.Error />
-      </Field.Root>
-
-      <Field.Root name="idInstance">
-        <Field.Label>idInstance</Field.Label>
-        <Field.Control inputMode="numeric" placeholder="3100000001" autoComplete="username" />
-        <Field.Error />
-      </Field.Root>
-
-      <Field.Root name="apiTokenInstance">
-        <Field.Label>apiTokenInstance</Field.Label>
-        <Field.Control type="password" autoComplete="current-password" />
-        <Field.Error />
-      </Field.Root>
+    <form
+      noValidate
+      className="grid gap-4"
+      onSubmit={(event) =>
+        void handleSubmit((credentials) => {
+          signIn.mutate(credentials)
+        })(event)
+      }
+    >
+      <FormField
+        control={control}
+        name="apiUrl"
+        label="apiUrl"
+        type="url"
+        placeholder="https://3100.api.green-api.com/v3"
+        autoComplete="url"
+      />
+      <FormField
+        control={control}
+        name="idInstance"
+        label="idInstance"
+        inputMode="numeric"
+        placeholder="3100000001"
+        autoComplete="username"
+      />
+      <FormField
+        control={control}
+        name="apiTokenInstance"
+        label="apiTokenInstance"
+        type="password"
+        autoComplete="current-password"
+      />
 
       {signIn.error instanceof InstanceNotReadyError ? (
         <Alert.Root variant="warning">
@@ -82,6 +85,6 @@ export const SignInForm = () => {
         {signIn.isPending ? <Spinner /> : null}
         Войти
       </Button>
-    </Form>
+    </form>
   )
 }

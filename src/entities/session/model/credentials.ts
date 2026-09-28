@@ -8,4 +8,5 @@ export const credentialsSchema = z.object({
   apiTokenInstance: z.string().trim().min(1, 'Укажите apiTokenInstance'),
 })
 
-export type Credentials = z.infer<typeof credentialsSchema>
+export type CredentialsInput = z.input<typeof credentialsSchema>
+export type Credentials = z.output<typeof credentialsSchema>
