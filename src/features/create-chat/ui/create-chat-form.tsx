@@ -1,37 +1,25 @@
-import { zodResolver } from '@hookform/resolvers/zod'
 import { MessageSquarePlus } from 'lucide-react'
-import { useForm } from 'react-hook-form'
 
 import { useChatStore } from '@/entities/chat'
-import { Button } from '@/shared/ui/button'
-import { FormField } from '@/shared/ui/form'
+import { useZodForm } from '@/shared/lib/form'
+import { Form, FormField, FormSubmit } from '@/shared/ui/form'
 
-import {
-  type CreateChatInput,
-  createChatSchema,
-  type CreateChatValues,
-} from '../model/create-chat-schema'
+import { createChatSchema } from '../model/create-chat-schema'
 
 export const CreateChatForm = () => {
   const openChat = useChatStore((state) => state.openChat)
-  const { control, handleSubmit, reset } = useForm<CreateChatInput, unknown, CreateChatValues>({
-    resolver: zodResolver(createChatSchema),
-    defaultValues: { phone: '' },
-  })
+  const form = useZodForm(createChatSchema)
 
   return (
-    <form
-      noValidate
+    <Form
+      form={form}
+      resetOnSubmit
+      onSubmit={({ phone }) => {
+        openChat(phone)
+      }}
       className="flex items-start gap-2"
-      onSubmit={(event) =>
-        void handleSubmit(({ phone }) => {
-          openChat(phone)
-          reset()
-        })(event)
-      }
     >
       <FormField
-        control={control}
         name="phone"
         label="Номер телефона получателя"
         hideLabel
@@ -41,9 +29,9 @@ export const CreateChatForm = () => {
         placeholder="Номер телефона"
         autoComplete="tel"
       />
-      <Button type="submit" size="icon" variant="secondary" aria-label="Создать чат">
+      <FormSubmit size="icon" variant="secondary" aria-label="Создать чат">
         <MessageSquarePlus />
-      </Button>
-    </form>
+      </FormSubmit>
+    </Form>
   )
 }

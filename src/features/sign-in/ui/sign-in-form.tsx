@@ -1,12 +1,7 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-
-import { type Credentials, type CredentialsInput, credentialsSchema } from '@/entities/session'
-import { useFormResolver } from '@/shared/lib/form'
+import { credentialsSchema } from '@/entities/session'
+import { useZodForm } from '@/shared/lib/form'
 import { Alert } from '@/shared/ui/alert'
-import { Button } from '@/shared/ui/button'
-import { FormField } from '@/shared/ui/form'
-import { Spinner } from '@/shared/ui/spinner'
+import { Form, FormField, FormSubmit } from '@/shared/ui/form'
 
 import { InstanceNotReadyError, useSignIn } from '../model/use-sign-in'
 import type { InstanceProblem } from '../model/verify-instance'
@@ -21,34 +16,27 @@ const PROBLEM_TEXT: Record<InstanceProblem, string> = {
 
 export const SignInForm = () => {
   const signIn = useSignIn()
-  const form = useForm<CredentialsInput, unknown, Credentials>({
-    resolver: zodResolver(credentialsSchema),
-    defaultValues: {
-      apiUrl: import.meta.env.VITE_DEFAULT_API_URL ?? '',
-      idInstance: '',
-      apiTokenInstance: '',
-    },
+  const form = useZodForm(credentialsSchema, {
+    // deploy-time prefill is a UI concern, so it is not baked into the entity schema
+    defaultValues: { apiUrl: import.meta.env.VITE_DEFAULT_API_URL ?? '' },
   })
-  const { resolveError } = useFormResolver(form)
 
   return (
-    <form
-      noValidate
+    <Form
+      form={form}
       className="grid gap-4"
-      onSubmit={(event) =>
-        void form.handleSubmit((credentials) => {
-          signIn.mutate(credentials, {
-            onError: (error) => {
-              if (!(error instanceof InstanceNotReadyError)) {
-                void resolveError(error)
-              }
-            },
-          })
-        })(event)
-      }
+      onSubmit={async (credentials) => {
+        try {
+          await signIn.mutateAsync(credentials)
+        } catch (error) {
+          // shown inline below; anything else goes to field errors or a toast
+          if (!(error instanceof InstanceNotReadyError)) {
+            throw error
+          }
+        }
+      }}
     >
       <FormField
-        control={form.control}
         name="apiUrl"
         label="apiUrl"
         type="url"
@@ -56,7 +44,6 @@ export const SignInForm = () => {
         autoComplete="url"
       />
       <FormField
-        control={form.control}
         name="idInstance"
         label="idInstance"
         inputMode="numeric"
@@ -64,7 +51,6 @@ export const SignInForm = () => {
         autoComplete="username"
       />
       <FormField
-        control={form.control}
         name="apiTokenInstance"
         label="apiTokenInstance"
         type="password"
@@ -84,10 +70,7 @@ export const SignInForm = () => {
         </Alert.Root>
       ) : null}
 
-      <Button type="submit" size="lg" disabled={signIn.isPending}>
-        {signIn.isPending ? <Spinner /> : null}
-        Войти
-      </Button>
-    </form>
+      <FormSubmit size="lg">Войти</FormSubmit>
+    </Form>
   )
 }
