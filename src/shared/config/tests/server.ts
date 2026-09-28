@@ -1,0 +1,13 @@
+import { setupServer } from 'msw/node'
+
+import { createGreenApiMock } from '@/shared/api/mocks'
+
+export const TEST_CREDENTIALS = {
+  apiUrl: 'https://api.test',
+  idInstance: '3100000001',
+  apiTokenInstance: 'test-token',
+}
+
+export const greenApiMock = createGreenApiMock({ emptyQueueDelayMs: 0, replyDelayMs: 0 })
+
+export const server = setupServer(...greenApiMock.handlers)
