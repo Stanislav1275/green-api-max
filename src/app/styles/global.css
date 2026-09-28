@@ -268,4 +268,9 @@
   body {
     @apply bg-background font-sans text-foreground antialiased;
   }
+
+  /* one icon size across the UI; utilities (e.g. size-3.5 in bubble meta) still win */
+  svg.lucide {
+    @apply size-5 shrink-0;
+  }
 }
