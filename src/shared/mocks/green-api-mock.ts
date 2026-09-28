@@ -6,9 +6,9 @@ import {
   createSenderData,
   createSettings,
   createStateInstance,
-} from '../gen/mocks'
-import type { Notification, NotificationBody } from '../gen/types'
-import { sendMessageRequestSchema } from '../gen/zod'
+} from '@/shared/api/gen/mocks'
+import type { Notification, NotificationBody } from '@/shared/api/gen/types'
+import { sendMessageRequestSchema } from '@/shared/api/gen/zod'
 
 const INSTANCE = '*/waInstance:idInstance'
 type GreenApiMockOptions = {
