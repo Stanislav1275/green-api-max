@@ -1,5 +1,6 @@
 export { getChatTitle } from './lib/chat-title'
 export { type MessageEvent, parseNotification } from './lib/parse-notification'
+export { getRecipientChatId } from './lib/recipient-chat-id'
 export { useChatStore } from './model/chat-store'
 export { useActiveChat, useChatList } from './model/selectors'
 export type { Chat, Message, MessageStatus } from './model/types'

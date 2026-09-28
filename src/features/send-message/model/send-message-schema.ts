@@ -1,11 +1,15 @@
 import * as z from 'zod'
 
 import { sendMessageRequestSchema } from '@/shared/api'
+import { invariant } from '@/shared/lib/invariant'
 
 const { message } = sendMessageRequestSchema.shape
 
 /** Limit comes from the OpenAPI spec (via Kubb); the client adds trimming and "not empty". */
-export const MAX_MESSAGE_LENGTH = message.maxLength ?? 4000
+export const MAX_MESSAGE_LENGTH = invariant(
+  message.maxLength,
+  'sendMessage.message.maxLength in the OpenAPI spec',
+)
 
 export const sendMessageSchema = z.object({
   text: message.trim().min(1, 'Введите сообщение').prefault(''),
