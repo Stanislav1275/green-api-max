@@ -14,7 +14,7 @@ export const FormMessage = ({
     <Field.Error
       match
       data-slot="form-message"
-      className={cn('text-xs text-destructive', className)}
+      className={cn('px-4 text-[13px] leading-snug text-destructive', className)}
       {...props}
     >
       {children}

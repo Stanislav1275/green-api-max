@@ -5,7 +5,7 @@ import { cn } from '@/shared/lib/cn'
 const Root = ({ className, ...props }: ComponentProps<'div'>) => (
   <div
     data-slot="card"
-    className={cn('flex flex-col gap-6 rounded-xl border bg-card py-6 shadow-sm', className)}
+    className={cn('flex flex-col gap-6 rounded-2xl border border-divider bg-card py-6', className)}
     {...props}
   />
 )
@@ -17,7 +17,7 @@ const Header = ({ className, ...props }: ComponentProps<'div'>) => (
 const Title = ({ className, ...props }: ComponentProps<'h2'>) => (
   <h2
     data-slot="card-title"
-    className={cn('text-lg leading-none font-semibold', className)}
+    className={cn('text-xl leading-tight font-semibold', className)}
     {...props}
   />
 )

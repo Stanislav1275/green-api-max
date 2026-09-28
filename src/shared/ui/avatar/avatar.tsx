@@ -7,7 +7,7 @@ const Root = ({ className, ...props }: ComponentProps<typeof BaseAvatar.Root>) =
   <BaseAvatar.Root
     data-slot="avatar"
     className={cn(
-      'relative inline-flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary align-middle text-sm font-medium text-secondary-foreground select-none',
+      'relative inline-flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary align-middle text-base font-medium text-secondary-foreground select-none',
       className,
     )}
     {...props}
