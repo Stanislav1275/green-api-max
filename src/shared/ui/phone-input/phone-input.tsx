@@ -46,7 +46,7 @@ export const PhoneInput = ({
     <div
       data-slot="phone-input"
       className={cn(
-        'flex h-12 items-center rounded-lg bg-input transition-shadow focus-within:ring-2 focus-within:ring-ring has-aria-invalid:ring-2 has-aria-invalid:ring-destructive',
+        'flex h-12 items-center rounded-lg bg-input transition-shadow ring-inset focus-within:ring-2 focus-within:ring-ring has-aria-invalid:ring-2 has-aria-invalid:ring-destructive',
         className,
       )}
     >
@@ -88,7 +88,7 @@ export const PhoneInput = ({
                   <Search className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-subtle-foreground" />
                   <Combobox.Input
                     placeholder={t('phoneInput.search')}
-                    className="h-10 w-full rounded-lg bg-input pr-3 pl-10 text-[15px] outline-none placeholder:text-subtle-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                    className="h-10 w-full rounded-lg bg-input pr-3 pl-10 text-[15px] outline-none placeholder:text-subtle-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
                   />
                 </div>
                 <Combobox.Empty className="px-3 py-4 text-center text-sm text-subtle-foreground empty:hidden">
