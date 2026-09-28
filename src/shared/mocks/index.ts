@@ -1,1 +1,1 @@
-export { createGreenApiMock } from './green-api-mock'
+export { createGreenApiMock, toMaxChatId } from './green-api-mock'

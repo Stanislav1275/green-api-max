@@ -27,10 +27,13 @@ const MODIFIER_ALIASES: Partial<Record<string, keyof Omit<ParsedHotKey, 'key'>>>
  */
 export const parseHotKey = (combo: string): ParsedHotKey => {
   const parts = combo.split('+').map((part) => part.trim().toLowerCase())
-  const key = parts.pop() ?? ''
+  const key = combo
+    .slice(combo.lastIndexOf('+') + 1)
+    .trim()
+    .toLowerCase()
   const parsed: ParsedHotKey = { key, ctrl: false, meta: false, alt: false, shift: false }
 
-  for (const part of parts) {
+  for (const part of parts.slice(0, -1)) {
     const modifier = part === 'mod' ? (isApple() ? 'meta' : 'ctrl') : MODIFIER_ALIASES[part]
     if (!modifier) {
       throw new Error(`Unknown modifier "${part}" in hot key "${combo}"`)

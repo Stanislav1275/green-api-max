@@ -18,12 +18,5 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": [
-    "vite.config.ts",
-    "vitest.config.ts",
-    "kubb.config.ts",
-    "playwright.config.ts",
-    "e2e",
-    "commitlint.config.ts"
-  ]
+  "include": ["vite.config.ts", "vitest.config.ts", "kubb.config.ts", "commitlint.config.ts"]
 }

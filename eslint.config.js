@@ -37,7 +37,7 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
       parserOptions: {
-        project: ['./tsconfig.app.json', './tsconfig.node.json'],
+        project: ['./tsconfig.app.json', './tsconfig.node.json', './tsconfig.e2e.json'],
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -130,6 +130,14 @@ export default defineConfig([
   {
     files: ['*.config.{js,ts}', 'e2e/**/*.ts'],
     languageOptions: { globals: globals.node },
+  },
+  {
+    // Playwright fixtures call `use()`, which is not a React hook
+    files: ['e2e/**/*.ts'],
+    rules: {
+      'react-hooks/rules-of-hooks': 'off',
+      '@eslint-react/rules-of-hooks': 'off',
+    },
   },
   prettier,
 ])

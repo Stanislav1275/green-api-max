@@ -17,7 +17,9 @@
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "api:gen": "kubb generate",
-    "prepare": "husky"
+    "prepare": "husky",
+    "dev:demo": "vite --mode demo",
+    "build:demo": "tsc -b && vite build --mode demo"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

@@ -9,25 +9,27 @@ import { Textarea } from '@/shared/ui/textarea'
 import { MAX_MESSAGE_LENGTH, sendMessageSchema } from '../model/send-message-schema'
 import { useSendMessage } from '../model/use-send-message'
 
-const submitForm = (event: KeyboardEvent) => {
-  if (event.target instanceof HTMLTextAreaElement) {
-    event.target.form?.requestSubmit()
-  }
-}
-
 export const SendMessageForm = ({ chat }: { chat: Chat }) => {
-  const sendMessage = useSendMessage()
+  const { send } = useSendMessage()
   const form = useZodForm(sendMessageSchema)
   // Enter sends; Shift+Enter is not matched and keeps inserting a line break
-  const handleKeyDown = useHotKey<HTMLTextAreaElement>([['Enter', submitForm]])
+  const handleKeyDown = useHotKey<HTMLFormElement>([
+    [
+      'Enter',
+      (event) => {
+        event.currentTarget.requestSubmit()
+      },
+    ],
+  ])
 
   return (
     <Form
       form={form}
       resetOnSubmit
       onSubmit={({ text }) => {
-        sendMessage.mutate({ chatId: chat.id, recipient: chat.phone ?? chat.id, text })
+        send(chat, text)
       }}
+      onKeyDown={handleKeyDown}
       className="flex items-end gap-2 border-t bg-background p-3"
     >
       <FormField
@@ -41,17 +43,10 @@ export const SendMessageForm = ({ chat }: { chat: Chat }) => {
             placeholder="Сообщение"
             maxLength={MAX_MESSAGE_LENGTH}
             className="rounded-2xl"
-            onKeyDown={handleKeyDown}
           />
         }
       />
-      <FormSubmit
-        requireValid
-
-        size="icon"
-        className="rounded-full"
-        aria-label="Отправить"
-      >
+      <FormSubmit requireValid size="icon" className="rounded-full" aria-label="Отправить">
         <SendHorizontal />
       </FormSubmit>
     </Form>

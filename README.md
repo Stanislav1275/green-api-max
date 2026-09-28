@@ -21,7 +21,7 @@ npm run dev        # с реальным инстансом
 **Демо без инстанса** — GREEN-API подменяется MSW-моком прямо в браузере, собеседник отвечает эхом:
 
 ```bash
-VITE_API_MOCKS=true npm run dev
+npm run dev:demo
 ```
 
 В демо-режиме подойдут любые данные, например `https://api.green-api.com/v3` / `1101000001` / `token`.
@@ -67,6 +67,30 @@ HTTP API получает уведомления, только если в [на
 - `resolveErrorAsync(error)` — самостоятельный обработчик: нормализует и показывает toast.
 - `const { resolveError } = useFormResolver(form)` — для react-hook-form: ошибки полей из ответа уходят в `form.setError`, остальное — в toast.
 - Все мутации без `meta.manualErrorHandling` показывают toast автоматически через `MutationCache.onError`.
+
+## Надёжность
+
+- Каждый запрос обрывается через **30 с** (`AbortSignal.timeout`) — пользователь видит «Сервер не ответил».
+- Идемпотентные запросы (`getStateInstance`, `getSettings`, `deleteNotification`) повторяются при сетевых ошибках, таймауте, 429 и 5xx — **прогрессивный backoff с джиттером**. `sendMessage` не повторяется: POST не идемпотентен, повтор мог бы доставить сообщение дважды.
+- Цикл опроса не может заблокировать event loop: каждая итерация отдаёт макротаску, пустые ответы — не чаще раза в 250 мс (если сервер не держит long-poll), застрявшее в очереди уведомление и сбои уходят в backoff до 30 с.
+
+## Тесты
+
+User stories и тест-кейсы — в [`docs/user-stories.md`](docs/user-stories.md). ID кейса стоит в названии теста.
+
+| Уровень        | Где                           | Что                                                                |
+| -------------- | ----------------------------- | ------------------------------------------------------------------ |
+| Unit           | рядом с кодом, `*.test.ts(x)` | lib, схемы, стор, парсинг, ошибки, цикл опроса, хуки, UI-kit       |
+| Интеграционные | `src/app/stories/`            | каждая user story: всё приложение в jsdom + MSW-мок GREEN-API      |
+| E2E            | `e2e/` (Playwright)           | основной сценарий, reload, выход, мобильная ширина — в демо-режиме |
+
+```bash
+npm test                 # unit + интеграционные
+npm run test:coverage    # порог 100% по statements / branches / functions / lines
+npx playwright install chromium && npm run test:e2e
+```
+
+Под Vitest React Compiler отключён: он только мемоизирует, а его ветки кэша искажали бы покрытие. Прод-сборка — с компилятором.
 
 ## Стек
 

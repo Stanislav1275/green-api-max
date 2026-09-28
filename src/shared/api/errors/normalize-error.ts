@@ -71,6 +71,9 @@ const fromResponse = (status: number, body: ErrorBody | null): AppError => {
 
 /** Turns anything thrown by a request into one of a few shapes the UI knows how to show. */
 export const normalizeError = async (error: unknown): Promise<AppError> => {
+  if (error instanceof DOMException && error.name === 'TimeoutError') {
+    return { kind: 'timeout', message: 'Сервер не ответил — попробуйте ещё раз' }
+  }
   if (error instanceof DOMException && error.name === 'AbortError') {
     return { kind: 'aborted', message: error.message }
   }

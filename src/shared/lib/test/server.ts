@@ -8,6 +8,6 @@ export const TEST_CREDENTIALS = {
   apiTokenInstance: 'test-token',
 }
 
-export const greenApiMock = createGreenApiMock({ emptyQueueDelayMs: 0, replyDelayMs: 0 })
+export const greenApiMock = createGreenApiMock({ emptyQueueDelayMs: 20, replyDelayMs: 50 })
 
 export const server = setupServer(...greenApiMock.handlers)

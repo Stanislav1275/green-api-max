@@ -1,14 +1,13 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { useChatStore } from '@/entities/chat'
+import { type Chat, getRecipientChatId, useChatStore } from '@/entities/chat'
 import { useGreenApi } from '@/entities/session'
-import { phoneToChatId } from '@/shared/lib/phone'
 
 type SendMessageVariables = {
-  chatId: string
-  /** phone digits or a MAX numeric chat id */
-  recipient: string
+  chat: Pick<Chat, 'id' | 'phone'>
   text: string
+  /** id of the optimistic bubble until the server assigns a real one */
+  tempId: string
 }
 
 /** Optimistic send: the bubble appears immediately and is resolved by the API response. */
@@ -17,30 +16,30 @@ export const useSendMessage = () => {
   const addOutgoing = useChatStore((state) => state.addOutgoing)
   const resolveOutgoing = useChatStore((state) => state.resolveOutgoing)
 
-  return useMutation({
-    mutationFn: ({ recipient, text }: SendMessageVariables) =>
-      api.sendMessage({
-        chatId: /^\d{10,15}$/.test(recipient) ? phoneToChatId(recipient) : recipient,
-        message: text,
-      }),
-    onMutate: ({ chatId, text }) => {
-      const tempId = `local-${crypto.randomUUID()}`
-      addOutgoing(chatId, {
+  const mutation = useMutation({
+    mutationFn: ({ chat, text }: SendMessageVariables) =>
+      api.sendMessage({ chatId: getRecipientChatId(chat), message: text }),
+    onMutate: ({ chat, text, tempId }) => {
+      addOutgoing(chat.id, {
         id: tempId,
         text,
         direction: 'out',
         timestamp: Date.now(),
         status: 'pending',
       })
-      return { tempId }
     },
-    onSuccess: ({ idMessage }, { chatId }, context) => {
-      resolveOutgoing(chatId, context.tempId, { id: idMessage, status: 'sent' })
+    onSuccess: ({ idMessage }, { chat, tempId }) => {
+      resolveOutgoing(chat.id, tempId, { id: idMessage, status: 'sent' })
     },
-    onError: (_error, { chatId }, context) => {
-      if (context) {
-        resolveOutgoing(chatId, context.tempId, { status: 'failed' })
-      }
+    onError: (_error, { chat, tempId }) => {
+      resolveOutgoing(chat.id, tempId, { status: 'failed' })
     },
   })
+
+  return {
+    ...mutation,
+    send: (chat: SendMessageVariables['chat'], text: string) => {
+      mutation.mutate({ chat, text, tempId: `local-${crypto.randomUUID()}` })
+    },
+  }
 }
