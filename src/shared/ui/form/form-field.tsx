@@ -1,5 +1,5 @@
 import type { ComponentProps, ReactElement, ReactNode } from 'react'
-import { Controller, useFormContext } from 'react-hook-form'
+import { Controller, type ControllerRenderProps, useFormContext } from 'react-hook-form'
 
 import { cn } from '@/shared/lib/cn'
 
@@ -17,6 +17,8 @@ type FormFieldProps = Omit<
   rootClassName?: string
   /** swap the `<input>` for another control, e.g. `render={<Textarea />}` */
   render?: ReactElement
+  /** composite controls (`PhoneInput`) get the react-hook-form field and render their own `Field.Control` */
+  renderControl?: (field: ControllerRenderProps) => ReactNode
 }
 
 /**
@@ -29,6 +31,7 @@ export const FormField = ({
   hideLabel,
   rootClassName,
   render,
+  renderControl,
   className,
   ...controlProps
 }: FormFieldProps) => {
@@ -47,16 +50,20 @@ export const FormField = ({
           className={rootClassName}
         >
           <Field.Label className={cn(hideLabel && 'sr-only')}>{label}</Field.Label>
-          <Field.Control
-            {...controlProps}
-            render={render}
-            className={className}
-            ref={field.ref}
-            name={field.name}
-            value={(field.value as string | undefined) ?? ''}
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-          />
+          {renderControl ? (
+            renderControl(field)
+          ) : (
+            <Field.Control
+              {...controlProps}
+              render={render}
+              className={className}
+              ref={field.ref}
+              name={field.name}
+              value={(field.value as string | undefined) ?? ''}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+            />
+          )}
           <FormMessage>{fieldState.error?.message}</FormMessage>
         </Field.Root>
       )}

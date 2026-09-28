@@ -4,14 +4,14 @@ import type { ComponentProps } from 'react'
 import { cn } from '@/shared/lib/cn'
 
 const alertVariants = cva(
-  'grid gap-1 rounded-lg border px-4 py-3 text-sm [&_a]:font-medium [&_a]:underline',
+  'grid gap-1 rounded-xl px-4 py-3 text-sm [&_a]:font-medium [&_a]:text-link',
   {
     variants: {
       variant: {
-        default: 'bg-card',
+        default: 'bg-muted',
         warning:
-          'border-amber-500/40 bg-amber-500/10 text-amber-900 dark:text-amber-100 [&_[data-slot=alert-title]]:text-amber-950 dark:[&_[data-slot=alert-title]]:text-amber-50',
-        destructive: 'border-destructive/40 bg-destructive/10 text-destructive',
+          'bg-amber-500/12 text-foreground [&_[data-slot=alert-title]]:text-amber-600 dark:[&_[data-slot=alert-title]]:text-amber-400',
+        destructive: 'bg-destructive/12 text-destructive',
       },
     },
     defaultVariants: { variant: 'default' },
