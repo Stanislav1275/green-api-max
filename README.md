@@ -3,6 +3,8 @@
 Веб-чат для мессенджера MAX поверх [GREEN-API](https://green-api.com/max): входишь с данными инстанса, пишешь на номер телефона и получаешь ответы. Выглядит как [web.max.ru](https://web.max.ru/).
 
 **Демо:** https://stanislav1275.github.io/green-api-max/ — работает без инстанса, вместо GREEN-API в браузере крутится мок.
+<img width="706" height="396" alt="image" src="https://github.com/user-attachments/assets/22731587-70bb-4d5e-9d3f-bdb5fb45e5a3" />
+
 
 ## Что умеет
 
