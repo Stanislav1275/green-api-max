@@ -2,7 +2,6 @@ import { Toast } from '@base-ui/react/toast'
 
 import { i18n } from '@/shared/lib/i18n'
 
-/** Module-level manager: toasts can be raised outside React (query cache, error resolvers). */
 export const toastManager = Toast.createToastManager()
 
 export const toast = {

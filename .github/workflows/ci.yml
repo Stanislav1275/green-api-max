@@ -1,6 +1,5 @@
 name: CI
 
-# main is checked by deploy.yml, which calls this workflow before publishing
 on:
   push:
     branches: [dev]
@@ -8,7 +7,6 @@ on:
   workflow_call:
 
 concurrency:
-  # github.workflow is the caller's name when reused, so Deploy never cancels CI and vice versa
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
@@ -26,6 +24,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      - run: npm audit --audit-level=high
       - run: npm run format:check
       - run: npm run lint
       - run: npm run lint:fsd
@@ -45,7 +44,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - run: npm test
+      - run: npm run test:coverage
 
   e2e:
     name: E2E

@@ -55,4 +55,15 @@ describe('US-2: новый чат по номеру телефона', () => {
       'aria-current',
     )
   })
+
+  it('TC-2.6: код страны выбирается поиском, введённый номер сохраняется', async () => {
+    const { user } = renderApp({ signedIn: true })
+    await user.type(await screen.findByLabelText('Номер телефона получателя'), '291234567')
+    await user.click(screen.getByRole('combobox', { name: /Код страны/ }))
+    await user.type(await screen.findByPlaceholderText('Найти страну'), 'Бел')
+    await user.click(await screen.findByRole('option', { name: /Беларусь/ }))
+
+    expect(screen.getByRole('combobox', { name: 'Код страны: Беларусь +375' })).toBeInTheDocument()
+    expect(screen.getByLabelText('Номер телефона получателя')).toHaveValue('291234567')
+  })
 })

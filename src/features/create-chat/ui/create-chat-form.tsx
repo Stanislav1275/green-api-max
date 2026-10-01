@@ -31,7 +31,7 @@ export const CreateChatForm = () => {
           <PhoneInput
             ref={field.ref}
             name={field.name}
-            value={(field.value as string | undefined) ?? ''}
+            value={field.value as string}
             onChange={field.onChange}
             onBlur={field.onBlur}
           />

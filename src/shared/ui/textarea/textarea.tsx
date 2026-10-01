@@ -2,7 +2,6 @@ import type { ComponentProps } from 'react'
 
 import { cn } from '@/shared/lib/cn'
 
-/** MAX writebar: grows with its content via `field-sizing: content`, capped by `max-h-*`. */
 export const Textarea = ({ className, ...props }: ComponentProps<'textarea'>) => (
   <textarea
     data-slot="textarea"

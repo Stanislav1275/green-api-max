@@ -9,10 +9,6 @@ type SessionState = {
   signOut: () => void
 }
 
-/**
- * Credentials live in localStorage so a reload keeps the user signed in.
- * Trade-off: the token survives a closed tab; swap to `sessionStorage` to shorten its lifetime.
- */
 export const useSessionStore = create<SessionState>()(
   persist(
     (set) => ({

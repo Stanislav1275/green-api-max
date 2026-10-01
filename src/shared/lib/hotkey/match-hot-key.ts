@@ -21,10 +21,6 @@ const MODIFIER_ALIASES: Partial<Record<string, keyof Omit<ParsedHotKey, 'key'>>>
   shift: 'shift',
 }
 
-/**
- * `'Mod+Shift+K'` → key + exact modifier set. `Mod` is ⌘ on Apple devices and Ctrl elsewhere.
- * Names are case-insensitive; the key is compared with `KeyboardEvent.key`.
- */
 export const parseHotKey = (combo: string): ParsedHotKey => {
   const parts = combo.split('+').map((part) => part.trim().toLowerCase())
   const key = combo
@@ -43,7 +39,6 @@ export const parseHotKey = (combo: string): ParsedHotKey => {
   return parsed
 }
 
-/** Exact match: `Enter` does not fire on `Shift+Enter`. */
 export const matchesHotKey = (event: KeyState, combo: string) => {
   const hotKey = parseHotKey(combo)
   return (

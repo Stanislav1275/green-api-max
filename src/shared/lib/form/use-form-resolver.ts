@@ -5,14 +5,9 @@ import { type AppError, normalizeError } from '@/shared/api'
 import { showErrorToast } from '../errors'
 
 type FormResolverOptions<TValues extends FieldValues> = {
-  /** server field name → form field name, when they differ (`message` → `text`) */
   fieldMap?: Partial<Record<string, FieldPath<TValues>>>
 }
 
-/**
- * Binds server errors to a react-hook-form instance: field errors from the response
- * light up the matching fields (rendered by `FormMessage`), everything else goes to a toast.
- */
 // eslint-disable-next-line @eslint-react/no-unnecessary-use-prefix -- paired with useForm by contract: called in render with the form instance
 export const useFormResolver = <TValues extends FieldValues>(
   form: Pick<UseFormReturn<TValues>, 'setError' | 'getValues'>,
@@ -31,7 +26,6 @@ export const useFormResolver = <TValues extends FieldValues>(
       matched.forEach(({ field, message }, index) => {
         form.setError(field, { type: 'server', message }, { shouldFocus: index === 0 })
       })
-      // every server error found its field — the form already says it all
       if (matched.length === Object.keys(appError.fields).length) {
         return appError
       }

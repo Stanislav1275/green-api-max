@@ -20,7 +20,6 @@ const applyLocale = (locale: Locale) => {
   document.documentElement.lang = locale
 }
 
-/** Chosen UI language (Russian by default, like MAX); drives i18next and `<html lang>`. */
 export const useLocaleStore = create<LocaleState>()(
   persist(
     (set) => ({

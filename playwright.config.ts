@@ -17,9 +17,8 @@ export default defineConfig({
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
   ],
-  // demo mode: the app talks to an in-browser MSW mock of GREEN-API
   webServer: {
-    command: `npx vite --mode demo --port ${PORT} --strictPort`,
+    command: `npm run build:demo && npx vite preview --mode demo --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}`,
     reuseExistingServer: !process.env.CI,
   },

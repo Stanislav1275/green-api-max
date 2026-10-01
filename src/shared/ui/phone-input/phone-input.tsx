@@ -24,10 +24,6 @@ type PhoneInputProps = {
   className?: string
 }
 
-/**
- * MAX phone field: flag + dial code picker with search, then the number.
- * The value is one string (`+375 29 123 45 67`), so any schema can validate it as a phone.
- */
 export const PhoneInput = ({
   value,
   onChange,
@@ -50,12 +46,12 @@ export const PhoneInput = ({
         className,
       )}
     >
-      {/* own field scope: otherwise Base UI labels the country trigger with the phone label too */}
       <Field.Root className="contents">
         <Combobox.Root
           items={COUNTRIES}
           value={country}
           onValueChange={(next) => {
+            /* v8 ignore else -- null comes only from Combobox.Clear, which is not rendered */
             if (next) {
               setSelected(next)
               onChange(composePhone(next, national))

@@ -2,13 +2,11 @@ import { backoffDelay, type BackoffOptions } from './backoff'
 import { sleep } from './sleep'
 
 export type RetryOptions = BackoffOptions & {
-  /** extra attempts after the first one */
   retries: number
   shouldRetry: (error: unknown) => boolean
   signal?: AbortSignal
 }
 
-/** Runs `task`, retrying retryable failures with progressive backoff. */
 export const withRetry = async <T>(
   task: () => Promise<T>,
   { retries, shouldRetry, signal, ...backoff }: RetryOptions,

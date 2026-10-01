@@ -3,10 +3,6 @@ import { createGreenApi } from '@/shared/api'
 
 export type InstanceProblem = 'notAuthorized' | 'webhookUrlSet' | 'notificationsDisabled'
 
-/**
- * HTTP API receiving works only when the instance is authorized in MAX,
- * `webhookUrl` is empty and incoming/outgoing notifications are enabled.
- */
 export const verifyInstance = async (credentials: Credentials): Promise<InstanceProblem[]> => {
   const api = createGreenApi(credentials)
   const [{ stateInstance }, settings] = await Promise.all([

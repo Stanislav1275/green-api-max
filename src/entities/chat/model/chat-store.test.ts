@@ -54,7 +54,6 @@ describe('chat store', () => {
       status: 'pending',
     })
     store().applyEvent(event({ id: 'srv-1', direction: 'out', phone: null, maxChatId: 'unknown' }))
-    // the event could not be matched yet, so it created its own chat keyed by MAX id
     store().applyEvent(event({ id: 'srv-1', direction: 'out' }))
     store().resolveOutgoing('79991234567', 'local', { id: 'srv-1', status: 'sent' })
 

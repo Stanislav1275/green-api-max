@@ -9,7 +9,6 @@ import { greenApiMock, server } from './server'
 
 const storeResets = vi.hoisted(() => new Set<() => void>())
 
-// zustand's recommended test setup: every store created in a test run is reset afterwards
 vi.mock('zustand', async (importOriginal) => {
   const zustand = await importOriginal<typeof Zustand>()
   const createTracked = (<T>(initializer: Zustand.StateCreator<T>) => {
@@ -25,7 +24,6 @@ vi.mock('zustand', async (importOriginal) => {
   return { ...zustand, create }
 })
 
-// jsdom has no layout engine
 Element.prototype.scrollTo = () => undefined
 
 beforeAll(() => {

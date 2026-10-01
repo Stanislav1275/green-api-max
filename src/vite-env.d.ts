@@ -1,4 +1,3 @@
-// `moduleDetection: force` turns every file into a module, so augment globals explicitly
 declare global {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- declaration merging needs an interface
   interface ImportMetaEnv {

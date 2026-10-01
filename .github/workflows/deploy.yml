@@ -1,6 +1,5 @@
 name: Deploy
 
-# the demo build (VITE_DEMO_MODE=on) goes to GitHub Pages after CI passes on main
 on:
   push:
     branches: [main]

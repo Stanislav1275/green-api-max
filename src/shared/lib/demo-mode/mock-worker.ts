@@ -2,7 +2,6 @@ import type { SetupWorker } from 'msw/browser'
 
 let worker: SetupWorker | null = null
 
-/** Serves GREEN-API from the in-browser MSW mock; msw and faker load only when needed. */
 export const startMockWorker = async () => {
   if (!worker) {
     const [{ setupWorker }, { createGreenApiMock }] = await Promise.all([

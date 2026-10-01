@@ -59,6 +59,17 @@ describe('US-1: вход по данным GREEN-API', () => {
     expect(screen.getByLabelText('apiUrl')).toHaveAttribute('aria-invalid', 'true')
   })
 
+  it.each(['http://api.green-api.com/v3', 'https://evil.example/green-api.com'])(
+    'TC-1.14: apiUrl «%s» не принимается — токен уходит только в GREEN-API по HTTPS',
+    async (apiUrl) => {
+      const { user, fillSignIn } = renderApp()
+      await fillSignIn({ ...TEST_CREDENTIALS, apiUrl })
+      await user.click(screen.getByRole('button', { name: 'Войти' }))
+
+      expect(await screen.findByText('Укажите apiUrl из личного кабинета')).toBeInTheDocument()
+    },
+  )
+
   it('TC-1.3: idInstance с буквами не принимается', async () => {
     const { user, fillSignIn } = renderApp()
     await fillSignIn({ ...TEST_CREDENTIALS, idInstance: '31abc' })
@@ -140,7 +151,6 @@ describe('US-1: вход по данным GREEN-API', () => {
     const { submitSignIn } = renderApp()
     await submitSignIn()
 
-    // network errors are retried with backoff before the user is told
     expect(await screen.findByRole('alert', {}, { timeout: 5_000 })).toHaveTextContent(
       'Нет соединения с сервером GREEN-API',
     )
@@ -169,5 +179,12 @@ describe('US-1: вход по данным GREEN-API', () => {
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: 'Чаты' })).toBeInTheDocument()
     })
+  })
+
+  it('TC-1.13: «Где взять данные» открывает подсказку', async () => {
+    const { user } = renderApp()
+    await user.click(screen.getByRole('button', { name: 'Где взять данные' }))
+
+    expect(await screen.findByRole('dialog', { name: 'Где взять данные' })).toBeInTheDocument()
   })
 })

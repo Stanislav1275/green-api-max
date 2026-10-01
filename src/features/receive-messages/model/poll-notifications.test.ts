@@ -14,7 +14,6 @@ type Step = Notification | null | Error
 
 const BACKOFF = { baseDelayMs: 1_000, maxDelayMs: 30_000, random: () => 1 }
 
-/** Fake GREEN-API serving `steps` in order; the loop is aborted once they run out. */
 const fakeApi = (steps: Step[], controller: AbortController) => {
   const queue = [...steps]
   return {
@@ -120,7 +119,6 @@ describe('pollNotifications', () => {
     )
 
     const loop = pollNotifications({ api, signal: controller.signal, onNotification: vi.fn() })
-    // with default jitter every pause is between 50% and 100% of 1, 2, 4, 8, 16, 30, 30 seconds
     await vi.advanceTimersByTimeAsync(45_500)
     expect(api.receiveNotification.mock.calls.length).toBeGreaterThanOrEqual(6)
     await vi.runAllTimersAsync()
@@ -136,7 +134,6 @@ describe('pollNotifications', () => {
     const loop = pollNotifications({ api, signal: controller.signal, onNotification: vi.fn() })
 
     await vi.advanceTimersByTimeAsync(1_000)
-    // at most one request per 250 ms instead of a busy loop
     expect(api.receiveNotification.mock.calls.length).toBeLessThanOrEqual(5)
     await vi.runAllTimersAsync()
     await loop

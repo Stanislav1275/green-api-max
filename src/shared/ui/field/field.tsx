@@ -17,7 +17,6 @@ const Label = ({ className, ...props }: ComponentProps<typeof BaseField.Label>) 
   />
 )
 
-/** Unstyled when used with `render` (e.g. a textarea brings its own styles). */
 const Control = ({ className, render, ...props }: ComponentProps<typeof BaseField.Control>) => (
   <BaseField.Control
     data-slot="field-control"
@@ -43,8 +42,4 @@ const Error = ({ className, ...props }: ComponentProps<typeof BaseField.Error>) 
   />
 )
 
-/**
- * Compound field: `<Field.Root name="x"><Field.Label /><Field.Control /><Field.Error /></Field.Root>`.
- * Label/description/error are wired to the control via aria attributes by Base UI.
- */
 export const Field = { Root, Label, Control, Description, Error }

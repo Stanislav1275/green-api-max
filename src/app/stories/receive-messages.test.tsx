@@ -18,7 +18,6 @@ describe('US-4: получение ответа', () => {
     const list = await messages()
     const reply = await list.findByText('Эхо: Привет')
     expect(reply.closest('li')).toHaveAttribute('data-direction', 'in')
-    // the reply joins the history instead of replacing the chat
     expect(list.getByText('Привет').closest('li')).toHaveAttribute('data-direction', 'out')
     expect(list.getAllByRole('listitem')).toHaveLength(2)
     expect(chatList().getAllByRole('button')).toHaveLength(1)
@@ -63,7 +62,6 @@ describe('US-4: получение ответа', () => {
     await openChat(PHONE)
     await send('Один раз')
 
-    // the mock echoes every send back as outgoingAPIMessageReceived
     await waitFor(() => {
       expect(greenApiMock.getQueueSize()).toBe(0)
     })
@@ -110,7 +108,6 @@ describe('US-4: получение ответа', () => {
   })
 
   it('TC-4.7: чат с новым сообщением поднимается наверх списка', async () => {
-    // GREEN-API timestamps have second precision, so move the clock between the steps
     vi.useFakeTimers({ shouldAdvanceTime: true, toFake: ['Date'] })
     const { openChat, chatList } = renderApp({ signedIn: true })
     await openChat(PHONE)

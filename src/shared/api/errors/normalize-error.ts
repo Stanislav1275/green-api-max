@@ -3,13 +3,8 @@ import * as z from 'zod'
 import { ResponseError } from '../gen/.kubb/client'
 import { type AppError, UNKNOWN_ERROR_MESSAGE } from './app-error'
 
-/** translation keys (errors.status.*) for statuses with a known meaning */
 const KNOWN_STATUSES = new Set([400, 401, 403, 404, 429, 466])
 
-/**
- * Client-side contract for error bodies. GREEN-API is not consistent here,
- * so every field is optional and field errors are accepted as a map or a list.
- */
 const errorBodySchema = z.object({
   message: z.string().optional(),
   error: z.string().optional(),
@@ -67,7 +62,6 @@ const fromResponse = (status: number, body: ErrorBody | null): AppError => {
   return { kind: 'unknown', message: UNKNOWN_ERROR_MESSAGE }
 }
 
-/** Turns anything thrown by a request into one of a few shapes the UI knows how to show. */
 export const normalizeError = async (error: unknown): Promise<AppError> => {
   if (error instanceof DOMException && error.name === 'TimeoutError') {
     return { kind: 'timeout', message: 'errors.timeout' }
@@ -81,7 +75,6 @@ export const normalizeError = async (error: unknown): Promise<AppError> => {
   if (error instanceof Response) {
     return fromResponse(error.status, await parseBody(error))
   }
-  // fetch rejects with a TypeError when the host is unreachable or CORS fails
   if (error instanceof TypeError) {
     return {
       kind: 'network',

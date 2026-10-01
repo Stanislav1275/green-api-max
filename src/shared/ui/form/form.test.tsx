@@ -7,7 +7,6 @@ import { useZodForm } from '@/shared/lib/form'
 import { Form, FormField, FormSubmit } from '.'
 
 const schema = z.object({
-  // no .prefault(): the field starts as undefined
   nickname: z.string().min(2, 'Минимум 2 символа'),
 })
 
@@ -22,8 +21,6 @@ const Nickname = ({ onSubmit }: { onSubmit: (values: z.output<typeof schema>) =>
 }
 
 describe('Form + FormField', () => {
-  // without .prefault('') zod sees `undefined` and reports a type error instead of min(2) —
-  // that is why every form schema in the app declares its defaults
   it('keeps a field without a default controlled and marks it invalid', async () => {
     const user = userEvent.setup()
     const onSubmit = vi.fn()

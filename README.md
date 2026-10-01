@@ -1,170 +1,162 @@
 # MAX · GREEN-API chat
 
-Веб-клиент для отправки и получения текстовых сообщений в мессенджере MAX через [GREEN-API](https://green-api.com/max).
-Внешний вид — по мотивам [web.max.ru](https://web.max.ru/), функциональность — минимальная по ТЗ.
+Веб-чат для мессенджера MAX поверх [GREEN-API](https://green-api.com/max): входишь с данными инстанса, пишешь на номер телефона и получаешь ответы. Выглядит как [web.max.ru](https://web.max.ru/).
+
+**Демо:** https://stanislav1275.github.io/green-api-max/ — работает без инстанса, вместо GREEN-API в браузере крутится мок.
+<img width="706" height="396" alt="image" src="https://github.com/user-attachments/assets/22731587-70bb-4d5e-9d3f-bdb5fb45e5a3" />
 
 ## Что умеет
 
-1. Вход по `apiUrl`, `idInstance`, `apiTokenInstance` — с проверкой, что инстанс готов принимать уведомления.
-2. Новый чат по номеру телефона получателя (`+7 999 123-45-67`, `8 999…`, `79991234567` — всё нормализуется).
-3. Отправка текста — [`SendMessage`](https://green-api.com/v3/docs/api/sending/SendMessage/).
-4. Получение ответов — [HTTP API](https://green-api.com/v3/docs/api/receiving/technology-http-api/) (`ReceiveNotification` + `DeleteNotification`).
+- Вход по `apiUrl`, `idInstance`, `apiTokenInstance`. Сразу проверяет, что инстанс авторизован и настроен на приём уведомлений, и подсказывает, что поправить.
+- Новый чат по номеру — в любом формате: `+7 999 123-45-67`, `8 999…`, `79991234567`.
+- Отправка текста ([`SendMessage`](https://green-api.com/v3/docs/api/sending/SendMessage/)) и получение ответов через [HTTP API](https://green-api.com/v3/docs/api/receiving/technology-http-api/).
+- Русский и английский интерфейс.
+- Адаптивная вёрстка — работает и на телефоне.
 
-## Быстрый старт
+## Запуск
 
 ```bash
-nvm use            # Node 24
+nvm use                                   # Node 24
 npm ci
-npm run dev        # иконка демо-режима доступна, демо выключено
+cp .env.example .env.development          # настройки dev-сервера
+npm run dev
 ```
 
-**Демо без инстанса** — GREEN-API подменяется MSW-моком прямо в браузере, собеседник отвечает эхом.
-Включается иконкой-колбой на экране входа; выбор запоминается. Доступность задаёт `VITE_DEMO_MODE`:
+Хочешь сразу в демо — `npm run dev:demo`. В демо подходят любые данные, кнопка «Подставить» заполнит форму, собеседник отвечает эхом.
 
-| Значение    | Иконка | Демо при первом входе     |
-| ----------- | ------ | ------------------------- |
-| `off`       | нет    | нет (только реальный API) |
-| `available` | есть   | выключено                 |
-| `on`        | есть   | включено                  |
+Демо-режим включается иконкой-колбой на экране входа. Будет ли колба, решает `VITE_DEMO_MODE`:
 
-```bash
-npm run dev:demo   # VITE_DEMO_MODE=on
+| Значение    | Колба | Демо при первом входе |
+| ----------- | ----- | --------------------- |
+| `off`       | нет   | нет                   |
+| `available` | есть  | выключено             |
+| `on`        | есть  | включено              |
+
+### Реальный инстанс
+
+HTTP API отдаёт уведомления, только если в [консоли](https://console.green-api.com) у инстанса:
+
+- **пустой** `webhookUrl`;
+- включены входящие сообщения и уведомления об отправке через API.
+
+## Как сделано
+
+### API из OpenAPI-спеки
+
+Я описал нужную часть GREEN-API в [`api/green-api.yaml`](api/green-api.yaml) (5 методов), а весь клиентский код по ней генерирует [Kubb](https://kubb.dev):
+
+```
+api/green-api.yaml
+        │  npm run api:gen
+        ▼
+src/shared/api/gen/
+  ├─ types/    TypeScript-типы запросов и ответов
+  ├─ zod/      zod-схемы — ими валидируются формы и входящие уведомления
+  ├─ clients/  fetch-функции
+  ├─ hooks/    queryOptions / mutationOptions для TanStack Query
+  └─ mocks/    faker-фабрики для тестов и демо
 ```
 
-В демо-режиме подойдут любые данные — кнопка «Подставить» на экране входа заполнит форму.
+Руками сверху написаны только обёртка с таймаутами и ретраями ([`green-api.ts`](src/shared/api/green-api.ts)), цикл опроса и MSW-хендлеры (плагин Kubb для MSW ломает путь `waInstance{idInstance}`). Сгенерированный код лежит в репо, а CI проверяет, что он совпадает со спекой: поправил yaml и забыл `api:gen` — сборка красная.
 
-### Настройка реального инстанса
+### Получение сообщений
 
-HTTP API получает уведомления, только если в [настройках инстанса](https://console.green-api.com):
+Один последовательный long-poll: `receiveNotification` (ждёт до 20 с) → обработать → `deleteNotification`. Цикл живёт в хуке, останавливается через `AbortController` при выходе и не запускается дважды в StrictMode.
 
-- `webhookUrl` — **пустой**;
-- включены входящие уведомления и уведомления об отправке через API.
+### Ошибки
 
-Приложение проверяет это при входе (`getStateInstance` + `getSettings`) и подсказывает, что поправить.
+Любая ошибка запроса превращается в один тип `AppError` ([`normalize-error.ts`](src/shared/api/errors/normalize-error.ts)): ошибки полей подсвечиваются в форме, остальное уходит в toast с понятным текстом. Мутации показывают toast сами, вручную ничего ловить не надо.
 
-## Подводные камни ТЗ и как они решены
+Запросы обрываются через 30 с. Безопасные запросы повторяются с нарастающей паузой, а `sendMessage` — нет, иначе сообщение может уйти дважды.
 
-| Проблема                                                                                                                                   | Решение                                                                                                                                                           |
-| ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Чат создаётся по `79991234567@c.us`, а ответ из MAX приходит с числовым `chatId` (`"10000000"`) — наивное сравнение `chatId` теряет ответы | Чат находится по `senderPhoneNumber`, затем запоминается связка телефон ↔ MAX `chatId` ([`chat-store.ts`](src/entities/chat/model/chat-store.ts))                 |
-| Очередь уведомлений FIFO: неудалённое уведомление приходит снова и блокирует остальные                                                     | Каждое уведомление удаляется в `finally` — даже неподдерживаемое или битое ([`poll-notifications.ts`](src/features/receive-messages/model/poll-notifications.ts)) |
-| `receiveNotification` отдаёт одно уведомление за запрос                                                                                    | Строго последовательный long-poll (`receiveTimeout=20`), `AbortController` — без двойного цикла в StrictMode и после выхода                                       |
-| Своё сообщение возвращается как `outgoingAPIMessageReceived`                                                                               | Дедупликация по `idMessage`, оптимистичная отправка сворачивается в одно сообщение                                                                                |
-| Уведомления — внешние данные                                                                                                               | Валидация zod-схемой, сгенерированной из OpenAPI                                                                                                                  |
-| При заданном `webhookUrl` HTTP API молчит                                                                                                  | Проверка настроек при входе                                                                                                                                       |
-| Сбои сети                                                                                                                                  | Экспоненциальный backoff до 30 с                                                                                                                                  |
-| WebSocket                                                                                                                                  | В MAX API его нет: только HTTP API и webhook; webhook требует бэкенд, ТЗ требует HTTP API                                                                         |
+### i18n
 
-### Где хранится токен
+i18next, словари [`ru.json`](src/shared/lib/i18n/locales/ru.json) и [`en.json`](src/shared/lib/i18n/locales/en.json).
 
-`localStorage`: вход переживает перезагрузку. Бэкенда нет, поэтому httpOnly-cookie невозможна, и от XSS не спасает ни одно JS-хранилище — защита в том, что текст сообщений рендерится только как текст (React-экранирование, без `dangerouslySetInnerHTML`). Для общих компьютеров достаточно заменить хранилище на `sessionStorage` в [`session-store.ts`](src/entities/session/model/session-store.ts). Кнопка «Выйти» очищает и токен, и историю.
+- Ключи типизированы: опечатка в `t('…')` не скомпилируется.
+- zod-схемы и ошибки возвращают ключи, а не готовый текст — переводится при показе, поэтому смена языка сразу меняет и сообщения валидации.
+- ESLint не пропустит непереведённую строку в JSX, `aria-label`, `placeholder`, `title`, `alt`.
+- Язык запоминается, `<html lang>` и заголовок вкладки меняются вместе с ним.
 
-## Обработка ошибок
+### UI
 
-Любая ошибка запроса приводится к одному виду — `AppError` ([`normalize-error.ts`](src/shared/api/errors/normalize-error.ts)):
+- Base UI + Tailwind v4 + cva — свой UI-kit в стиле shadcn/ui, компоненты лежат в проекте ([`src/shared/ui`](src/shared/ui)).
+- Формы на react-hook-form + zod, схемы берутся из Kubb и дополняются клиентскими правилами.
+- React Compiler — без ручных `useMemo` / `useCallback`.
+- Заголовок и description страницы — нативными тегами React 19, у открытого чата во вкладке видно имя.
 
-| kind         | Когда                                          | Что видит пользователь                         |
-| ------------ | ---------------------------------------------- | ---------------------------------------------- |
-| `validation` | 400/422 с ошибками полей                       | подсветка полей формы (`FormMessage`)          |
-| `http`       | известный статус: 401, 403, 404, 429, 466, 5xx | toast с понятным текстом                       |
-| `network`    | хост недоступен / CORS                         | toast «Нет соединения…»                        |
-| `aborted`    | отмена запроса нами                            | ничего                                         |
-| `unknown`    | всё остальное                                  | toast «Произошла неизвестная серверная ошибка» |
+### Архитектура
 
-- `resolveErrorAsync(error)` — самостоятельный обработчик: нормализует и показывает toast.
-- `const { resolveError } = useFormResolver(form)` — для react-hook-form: ошибки полей из ответа уходят в `form.setError`, остальное — в toast.
-- Все мутации без `meta.manualErrorHandling` показывают toast автоматически через `MutationCache.onError`.
-
-## Языки
-
-Русский и английский: глобус в шапке, выбор запоминается, `<html lang>` меняется вместе с ним.
-
-- Словари — [`ru.json`](src/shared/lib/i18n/locales/ru.json) и [`en.json`](src/shared/lib/i18n/locales/en.json); ключи типизированы по `ru.json`, опечатка в `t('…')` — ошибка компиляции.
-- zod-схемы и нормализованные ошибки отдают ключи, перевод — при показе; сырой текст от сервера показывается как есть.
-- ESLint (`i18next/no-literal-string`) не пропускает непереведённый текст в JSX и в `aria-label` / `placeholder` / `title` / `alt`.
-
-## Надёжность
-
-- Каждый запрос обрывается через **30 с** (`AbortSignal.timeout`) — пользователь видит «Сервер не ответил».
-- Идемпотентные запросы (`getStateInstance`, `getSettings`, `deleteNotification`) повторяются при сетевых ошибках, таймауте, 429 и 5xx — **прогрессивный backoff с джиттером**. `sendMessage` не повторяется: POST не идемпотентен, повтор мог бы доставить сообщение дважды.
-- Цикл опроса не может заблокировать event loop: каждая итерация отдаёт макротаску, пустые ответы — не чаще раза в 250 мс (если сервер не держит long-poll), застрявшее в очереди уведомление и сбои уходят в backoff до 30 с.
-
-## Тесты
-
-User stories и тест-кейсы — в [`docs/user-stories.md`](docs/user-stories.md). ID кейса стоит в названии теста.
-
-| Уровень        | Где                           | Что                                                                |
-| -------------- | ----------------------------- | ------------------------------------------------------------------ |
-| Unit           | рядом с кодом, `*.test.ts(x)` | lib, схемы, стор, парсинг, ошибки, цикл опроса, хуки, UI-kit       |
-| Интеграционные | `src/app/stories/`            | каждая user story: всё приложение в jsdom + MSW-мок GREEN-API      |
-| E2E            | `e2e/` (Playwright)           | основной сценарий, reload, выход, мобильная ширина — в демо-режиме |
-
-```bash
-npm test                 # unit + интеграционные
-npm run test:coverage    # порог 100% по statements / branches / functions / lines (в CI пока не гейт)
-npx playwright install chromium && npm run test:e2e
-```
-
-Под Vitest React Compiler отключён: он только мемоизирует, а его ветки кэша искажали бы покрытие. Прод-сборка — с компилятором.
-
-## Стек
-
-- **React 19** + **React Compiler** (без ручных `useMemo`/`useCallback`), Vite 8, TypeScript strict
-- **Feature-Sliced Design** — границы слоёв проверяют `eslint-plugin-boundaries` и `steiger`
-- **Kubb** — из [`api/green-api.yaml`](api/green-api.yaml) генерируются типы, zod-схемы, fetch-клиент, TanStack Query options и faker-фабрики
-- **Base UI** + Tailwind v4 + cva — композиционный UI-kit в подходе shadcn/ui (компоненты лежат в проекте, а не в `node_modules`)
-- **react-hook-form** + `zodResolver`; схемы — из Kubb, расширенные клиентскими правилами
-- **Base UI Toast** — уведомления об ошибках
-- **TanStack Query**, **zustand** (persist)
-- **MSW** — мок GREEN-API для тестов и демо-режима; **Vitest** + Testing Library
-
-## Архитектура
+[Feature-Sliced Design](https://feature-sliced.design/), границы слоёв проверяют `eslint-plugin-boundaries` и `steiger`.
 
 ```
 src/
-├─ app/        # провайдеры, стили, демо-режим, выбор экрана
-├─ pages/      # sign-in, messenger
-├─ widgets/    # chat-sidebar, chat-window
-├─ features/   # sign-in, sign-out, create-chat, send-message, receive-messages
-├─ entities/   # session (креды), chat (чаты, сообщения, парсинг уведомлений)
-└─ shared/
-   ├─ api/     # клиент GREEN-API + gen/ (Kubb)
-   ├─ mocks/   # MSW-мок GREEN-API
-   ├─ lib/     # cn, phone, format, test
-   └─ ui/      # UI-kit
+├─ app/        провайдеры, стили, демо-режим
+├─ pages/      sign-in, messenger
+├─ widgets/    список чатов, окно чата
+├─ features/   вход, выход, новый чат, отправка, получение
+├─ entities/   session, chat
+└─ shared/     api (+ gen), mocks, lib (i18n, phone, …), ui
 ```
 
-Слой импортирует только нижележащие слои, слайс — только через `index.ts`.
+Состояние — zustand с persist (сессия, чаты, язык), запросы — TanStack Query.
 
-## Скрипты
+## С чем пришлось повозиться
 
-| Команда                      | Что делает                                       |
-| ---------------------------- | ------------------------------------------------ |
-| `npm run dev`                | dev-сервер                                       |
-| `npm run build`              | typecheck + прод-сборка                          |
-| `npm run lint` / `lint:fsd`  | ESLint (0 warnings) / steiger                    |
-| `npm run typecheck`          | `tsc -b`                                         |
-| `npm test` / `test:coverage` | Vitest                                           |
-| `npm run api:gen`            | перегенерировать `src/shared/api/gen` из OpenAPI |
-| `npm run test:e2e`           | Playwright в демо-режиме                         |
+- **Ответ приходит «не в тот» чат.** Пишешь на `79991234567@c.us`, а ответ из MAX приходит с другим `chatId` вроде `10000000`. Поэтому чат ищется по номеру отправителя, а связка «номер ↔ chatId» запоминается ([`chat-store.ts`](src/entities/chat/model/chat-store.ts)).
+- **Очередь встаёт колом.** Пока уведомление не удалено, GREEN-API отдаёт его снова и снова. Поэтому удаляется каждое — даже непонятное или битое ([`poll-notifications.ts`](src/features/receive-messages/model/poll-notifications.ts)).
+- **Своё сообщение приходит обратно.** После отправки GREEN-API присылает его же как исходящее. Дубли склеиваются по `idMessage`.
+- **Уведомления — чужие данные.** Каждое проверяется zod-схемой, мусор не ломает чат.
+- **Задан webhook — тишина.** HTTP API тогда ничего не отдаёт, поэтому настройки проверяются ещё при входе.
+- **Отвалилась сеть.** Опрос не долбит сервер, а ждёт всё дольше, до 30 с.
+- **Почему не WebSocket.** В MAX API его нет: есть HTTP API и webhook, а webhook требует бэкенда.
+
+### Безопасность
+
+- **Токен** лежит в `localStorage`, чтобы вход переживал перезагрузку. Бэкенда нет, так что httpOnly-cookie не сделать. Для общих компьютеров достаточно сменить хранилище на `sessionStorage` в [`session-store.ts`](src/entities/session/model/session-store.ts). «Выйти» стирает и токен, и историю.
+- **XSS.** Текст сообщений выводится только как текст, без `dangerouslySetInnerHTML`.
+- **CSP.** В прод-сборке есть строгий Content-Security-Policy: никаких inline-скриптов и стилей, запросы — только к `*.green-api.com`. Даже если XSS случится, токен не утечёт на чужой сервер. E2E гоняются на прод-сборке и падают, если CSP что-то блокирует.
+- **apiUrl** принимается только по HTTPS и только на домене GREEN-API — токен идёт прямо в URL, по HTTP или «не туда» его отправлять нельзя.
+- **Зависимости.** CI запускает `npm audit`, Dependabot раз в неделю предлагает обновления.
+
+## Тесты
+
+Сценарии и тест-кейсы — в [`docs/user-stories.md`](docs/user-stories.md), ID кейса есть в названии теста.
+
+| Уровень        | Где                           | Что                                                      |
+| -------------- | ----------------------------- | -------------------------------------------------------- |
+| Unit           | рядом с кодом, `*.test.ts(x)` | утилиты, схемы, сторы, парсинг, ошибки, опрос, UI-kit    |
+| Интеграционные | `src/app/stories/`            | каждая user story целиком: приложение в jsdom + MSW-мок  |
+| E2E            | `e2e/` (Playwright)           | основной сценарий, перезагрузка, выход, мобильная ширина |
+
+```bash
+npm test
+npm run test:coverage
+npx playwright install chromium && npm run test:e2e
+```
 
 ## CI/CD
 
-GitHub Actions, `.github/workflows/`:
+GitHub Actions:
 
-| Workflow     | Когда                  | Что                                                                                                          |
-| ------------ | ---------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `ci.yml`     | push в `dev`, любой PR | параллельно: Prettier + ESLint + steiger + `tsc` + сверка `api:gen` с OpenAPI · Vitest · Playwright · сборка |
-| `deploy.yml` | push в `main`, вручную | тот же CI, затем демо-сборка (`VITE_DEMO_MODE=on`) на GitHub Pages                                           |
-
-Сборка на Pages идёт под путём `/<repo>/` (`VITE_BASE_PATH`), MSW-воркер берётся оттуда же. Отчёт Playwright при падении — в артефактах.
-
-Один раз после создания репозитория: **Settings → Pages → Source: GitHub Actions**.
+- **`ci.yml`** — на push в `dev` и на каждый PR. Параллельно: `npm audit`, Prettier, ESLint, steiger, `tsc`, сверка `api:gen` со спекой · Vitest с порогом покрытия 100% · Playwright · сборка.
+- **`deploy.yml`** — на push в `main`. Тот же CI, затем демо-сборка уезжает на GitHub Pages.
 
 ## Git flow
 
-- `main` — релизы, `dev` — интеграция.
-- Ветки от `dev`: `feature/*`, `fix/*`, `refactor/*`, `chore/*`, `docs/*`, `test/*`; горячие правки — `hotfix/*` от `main`.
-- Мерж только `--no-ff`; `dev` → `main` — релиз.
-- Коммиты — [Conventional Commits](https://www.conventionalcommits.org/) (`feat(chat): …`, `fix: …`), проверяются commitlint.
-- Husky: `pre-commit` — ESLint + Prettier по изменённым файлам, `commit-msg` — commitlint, `pre-push` — проверка имени ветки.
+- `main` — релизы, `dev` — разработка.
+- Ветки от `dev`: `feature/*`, `fix/*`, `refactor/*`, `chore/*`, `docs/*`, `test/*`; срочные правки — `hotfix/*` от `main`.
+- `main` защищена: только через PR и только с зелёным CI. Релиз — PR `dev` → `main` с названием `chore(release): x.y.z`.
+- Коммиты — [Conventional Commits](https://www.conventionalcommits.org/). Husky проверяет сообщение коммита, формат и линт изменённых файлов и имя ветки перед пушем.
+
+## Скрипты
+
+| Команда                      | Что делает                         |
+| ---------------------------- | ---------------------------------- |
+| `npm run dev` / `dev:demo`   | dev-сервер / он же в демо-режиме   |
+| `npm run build`              | проверка типов + прод-сборка       |
+| `npm run lint` / `lint:fsd`  | ESLint / проверка FSD              |
+| `npm run typecheck`          | `tsc -b`                           |
+| `npm test` / `test:coverage` | Vitest                             |
+| `npm run test:e2e`           | Playwright в демо-режиме           |
+| `npm run api:gen`            | перегенерировать клиент из OpenAPI |

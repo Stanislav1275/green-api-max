@@ -1,7 +1,6 @@
 @import '@fontsource-variable/roboto/wght.css';
 @import 'tailwindcss';
 
-/* `dark:` follows the OS unless the page pins a scheme with data-color-scheme */
 @custom-variant dark {
   @media (prefers-color-scheme: dark) {
     &:where(:root:not([data-color-scheme='light']) *) {
@@ -14,49 +13,44 @@
   }
 }
 
-/*
- * Design tokens taken from web.max.ru (theme "simple", chat background of theme "space").
- * Naming follows shadcn/ui so components stay portable; MAX-only tokens are prefixed by purpose.
- * Scheme: `prefers-color-scheme` by default, `<html data-color-scheme="light|dark">` overrides it.
- */
 :root,
 [data-color-scheme='light'] {
   color-scheme: light;
 
-  --background: #fff; /* background-primary */
-  --background-secondary: #f5f7fa; /* background-secondary */
-  --surface: #edeef2; /* background-surface */
-  --card: #fff; /* background-card */
-  --popover: #fff; /* float-primary-flat */
-  --foreground: #060708; /* text-primary */
-  --muted-foreground: #060708ad; /* text-secondary */
-  --subtle-foreground: #06070885; /* text-tertiary */
-  --muted: #0909090d; /* background-tertiary */
-  --hover: #f6f6f6; /* states-background-card-hover */
-  --border: #0c0d0e29; /* divider-primary */
-  --divider: #0c0d0e0f; /* divider-secondary */
-  --input: #09090914; /* input-background */
-  --ring: #007aff; /* stroke-themed */
+  --background: #fff;
+  --background-secondary: #f5f7fa;
+  --surface: #edeef2;
+  --card: #fff;
+  --popover: #fff;
+  --foreground: #060708;
+  --muted-foreground: #060708ad;
+  --subtle-foreground: #06070885;
+  --muted: #0909090d;
+  --hover: #f6f6f6;
+  --border: #0c0d0e29;
+  --divider: #0c0d0e0f;
+  --input: #09090914;
+  --ring: #007aff;
 
-  --primary: #007aff; /* button-primary */
-  --primary-hover: #479fff; /* states-button-primary-hover */
-  --primary-pressed: #006ee5; /* states-button-primary-pressed */
-  --primary-disabled: #007aff7a; /* states-button-primary-disabled */
+  --primary: #007aff;
+  --primary-hover: #479fff;
+  --primary-pressed: #006ee5;
+  --primary-disabled: #007aff7a;
   --primary-foreground: #fff;
-  --secondary: #e9ebf1; /* button-secondary */
+  --secondary: #e9ebf1;
   --secondary-hover: #eeeff4;
   --secondary-pressed: #e4e6ed;
   --secondary-foreground: #060708;
-  --disabled-foreground: #6f7276a3; /* states-text-primary-disabled */
-  --link: #007aff; /* text-themed */
+  --disabled-foreground: #6f7276a3;
+  --link: #007aff;
   --link-hover: #479fff;
-  --destructive: #ff303c; /* button-negative */
+  --destructive: #ff303c;
   --destructive-foreground: #fff;
   --positive: #1abe43;
 
-  --chat-background: #fff; /* chat-background-background */
-  --writebar: #fff; /* writebar-input-flat */
-  --pattern: #007aff26; /* space: chat-background-pattern-color, softened */
+  --chat-background: #fff;
+  --writebar: #fff;
+  --pattern: #007aff26;
   --bubble-in: #f2f2f2;
   --bubble-in-foreground: #060708;
   --bubble-in-meta: #06070885;
@@ -66,7 +60,6 @@
   --bubble-out-foreground: #fff;
   --bubble-out-meta: #ffffffa3;
 
-  /* brand gradient: MAX dark outgoing bubble, reused for the logo */
   --brand-1: #4429cc;
   --brand-2: #2251e5;
   --brand-3: #08c;
@@ -80,7 +73,7 @@
     --background-secondary: #25262d;
     --surface: #0f0f12;
     --card: #25262d;
-    --popover: #1e1f24; /* float-primary-carver */
+    --popover: #1e1f24;
     --foreground: #fff;
     --muted-foreground: #fffc;
     --subtle-foreground: #ffffffa3;
@@ -107,9 +100,9 @@
     --destructive-foreground: #fff;
     --positive: #2bc644;
 
-    --chat-background: #141414; /* space */
+    --chat-background: #141414;
     --writebar: #1e1f24;
-    --pattern: #505bc74d; /* space */
+    --pattern: #505bc74d;
     --bubble-in: #202022;
     --bubble-in-foreground: #fff;
     --bubble-in-meta: #ffffffa3;
@@ -121,7 +114,6 @@
   }
 }
 
-/* explicit dark scheme mirrors the media query above */
 [data-color-scheme='dark'] {
   color-scheme: dark;
 
@@ -199,12 +191,11 @@
   --color-brand-2: var(--brand-2);
   --color-brand-3: var(--brand-3);
 
-  /* MAX radii: border-radius-common-* */
-  --radius-sm: 0.5rem; /* s: 8px */
-  --radius-md: 0.625rem; /* m-half: 10px, small buttons */
-  --radius-lg: 0.75rem; /* m: 12px, inputs, medium buttons */
-  --radius-xl: 1rem; /* l: 16px, large buttons, chat cells, bubbles */
-  --radius-2xl: 1.25rem; /* xl: 20px, cards */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
 
   --font-sans: 'Roboto Variable', 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
@@ -218,7 +209,6 @@
   );
 }
 
-/* original space doodles tinted by --pattern, like the "space" chat theme of MAX */
 @utility bg-space-pattern {
   position: relative;
   isolation: isolate;
@@ -234,7 +224,6 @@
   }
 }
 
-/* animated angle for the logo gradient (registered, so it interpolates smoothly) */
 @property --logo-angle {
   syntax: '<angle>';
   inherits: false;
@@ -266,11 +255,6 @@
   }
 }
 
-/*
- * Sign-in card glow, same technique and values as web.max.ru: a card-wide circle with a
- * cyan → blue → purple conic gradient sits mostly above the card, blurred and turning,
- * so only its lower arc shimmers through the top 240px at 40% opacity.
- */
 @utility card-glow {
   position: absolute;
   inset: 0 0 auto;
@@ -326,5 +310,13 @@
 
   body {
     @apply bg-background font-sans text-foreground antialiased;
+  }
+
+  .base-ui-disable-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .base-ui-disable-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }

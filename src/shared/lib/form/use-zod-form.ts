@@ -8,18 +8,15 @@ type ZodFormOptions<TSchema extends z.ZodObject> = Omit<
   UseFormProps<z.input<TSchema>, unknown, z.output<TSchema>>,
   'resolver' | 'defaultValues'
 > & {
-  /** overrides on top of the schema's `.prefault()` / `.default()` values */
   defaultValues?: Partial<z.input<TSchema>>
 }
 
-/** `useForm` wired to a zod schema: resolver and `defaultValues` both come from the schema. */
 export const useZodForm = <TSchema extends z.ZodObject>(
   schema: TSchema,
   { defaultValues, ...options }: ZodFormOptions<TSchema> = {},
 ) =>
   useForm<z.input<TSchema>, unknown, z.output<TSchema>>({
     ...options,
-    // zodResolver's overloads cannot see through a generic schema
     resolver: zodResolver(schema) as unknown as Resolver<
       z.input<TSchema>,
       unknown,

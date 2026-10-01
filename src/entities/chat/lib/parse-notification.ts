@@ -4,10 +4,8 @@ export type MessageEvent = {
   id: string
   direction: 'in' | 'out'
   text: string
-  /** unix milliseconds */
   timestamp: number
   maxChatId: string
-  /** known only for incoming messages or when the chat id is `phone@c.us` */
   phone: string | null
   name: string | null
 }
@@ -18,14 +16,11 @@ const DIRECTION_BY_WEBHOOK: Partial<Record<string, MessageEvent['direction']>> =
   outgoingAPIMessageReceived: 'out',
 }
 
-// empty strings mean "no name" in GREEN-API payloads
 const pickName = (...names: (string | undefined)[]) => names.find((name) => name?.trim()) ?? null
 
 const PHONE_CHAT_ID = /^(\d+)@c\.us$/
 
-/** Extracts a text message from a notification; anything else (statuses, media, malformed) → `null`. */
 export const parseNotification = (payload: unknown): MessageEvent | null => {
-  // external data: validate against the OpenAPI-generated schema before trusting it
   const parsed = notificationBodySchema.safeParse(payload)
   if (!parsed.success) {
     return null
