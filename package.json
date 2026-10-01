@@ -83,7 +83,7 @@
     "jsdom": "^27.0.1",
     "kubb": "^5.3.19",
     "lint-staged": "^17.6.0",
-    "msw": "^2.15.0",
+    "msw": "^3.0.0",
     "prettier": "^3.9.9",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "steiger": "^0.7.0",
