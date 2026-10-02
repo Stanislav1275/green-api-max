@@ -5,7 +5,6 @@
 **Демо:** https://stanislav1275.github.io/green-api-max/ — работает без инстанса, вместо GREEN-API в браузере крутится мок.
 <img width="706" height="396" alt="image" src="https://github.com/user-attachments/assets/22731587-70bb-4d5e-9d3f-bdb5fb45e5a3" />
 
-
 ## Что умеет
 
 - Вход по `apiUrl`, `idInstance`, `apiTokenInstance`. Сразу проверяет, что инстанс авторизован и настроен на приём уведомлений, и подсказывает, что поправить.
