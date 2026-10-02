@@ -6,7 +6,7 @@ import { createGreenApi } from '@/shared/api'
 
 import { pollNotifications } from './poll-notifications'
 
-/** Keeps a single long-polling loop alive while the user is signed in. */
+/** Keeps a single long-polling loop - сокеты бы, эээх))) */
 export const useReceiveMessages = () => {
   const credentials = useCredentials()
   const applyEvent = useChatStore((state) => state.applyEvent)
@@ -29,7 +29,6 @@ export const useReceiveMessages = () => {
         console.warn('receiveNotification failed, retrying', error)
       },
     })
-    // aborting also cancels the hanging request, so StrictMode's double effect never runs two loops
     return () => {
       controller.abort()
     }

@@ -2,25 +2,28 @@ import { Toast } from '@base-ui/react/toast'
 import { X } from 'lucide-react'
 import type { ReactNode } from 'react'
 
+import { useTranslation } from '@/shared/lib/i18n'
+
 import { toastManager } from './toast-manager'
 
 const ToastList = () => {
   const { toasts } = Toast.useToastManager()
+  const { t } = useTranslation()
   return toasts.map((item) => (
     <Toast.Root
       key={item.id}
       toast={item}
-      className="relative grid w-80 gap-1 rounded-xl border bg-card p-4 pr-10 shadow-lg transition-all data-ending-style:translate-y-2 data-ending-style:opacity-0 data-starting-style:translate-y-2 data-starting-style:opacity-0 data-[type=error]:border-destructive/40"
+      className="relative grid w-80 gap-1 rounded-xl bg-popover p-4 pr-10 shadow-lg ring-1 ring-divider transition-all data-ending-style:translate-y-2 data-ending-style:opacity-0 data-starting-style:translate-y-2 data-starting-style:opacity-0 data-[type=error]:border-destructive/40"
     >
       <Toast.Content>
         <Toast.Title className="text-sm font-medium in-data-[type=error]:text-destructive" />
         <Toast.Description className="text-sm text-muted-foreground" />
       </Toast.Content>
       <Toast.Close
-        aria-label="Закрыть"
-        className="absolute top-3 right-3 rounded-md p-1 text-muted-foreground hover:bg-muted"
+        aria-label={t('common.close')}
+        className="absolute top-3 right-3 rounded-md p-1 text-subtle-foreground hover:bg-muted"
       >
-        <X className="size-4" />
+        <X />
       </Toast.Close>
     </Toast.Root>
   ))

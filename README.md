@@ -15,16 +15,23 @@
 ```bash
 nvm use            # Node 24
 npm ci
-npm run dev        # с реальным инстансом
+npm run dev        # иконка демо-режима доступна, демо выключено
 ```
 
-**Демо без инстанса** — GREEN-API подменяется MSW-моком прямо в браузере, собеседник отвечает эхом:
+**Демо без инстанса** — GREEN-API подменяется MSW-моком прямо в браузере, собеседник отвечает эхом.
+Включается иконкой-колбой на экране входа; выбор запоминается. Доступность задаёт `VITE_DEMO_MODE`:
+
+| Значение    | Иконка | Демо при первом входе     |
+| ----------- | ------ | ------------------------- |
+| `off`       | нет    | нет (только реальный API) |
+| `available` | есть   | выключено                 |
+| `on`        | есть   | включено                  |
 
 ```bash
-VITE_API_MOCKS=true npm run dev
+npm run dev:demo   # VITE_DEMO_MODE=on
 ```
 
-В демо-режиме подойдут любые данные, например `https://api.green-api.com/v3` / `1101000001` / `token`.
+В демо-режиме подойдут любые данные — кнопка «Подставить» на экране входа заполнит форму.
 
 ### Настройка реального инстанса
 
@@ -68,6 +75,38 @@ HTTP API получает уведомления, только если в [на
 - `const { resolveError } = useFormResolver(form)` — для react-hook-form: ошибки полей из ответа уходят в `form.setError`, остальное — в toast.
 - Все мутации без `meta.manualErrorHandling` показывают toast автоматически через `MutationCache.onError`.
 
+## Языки
+
+Русский и английский: глобус в шапке, выбор запоминается, `<html lang>` меняется вместе с ним.
+
+- Словари — [`ru.json`](src/shared/lib/i18n/locales/ru.json) и [`en.json`](src/shared/lib/i18n/locales/en.json); ключи типизированы по `ru.json`, опечатка в `t('…')` — ошибка компиляции.
+- zod-схемы и нормализованные ошибки отдают ключи, перевод — при показе; сырой текст от сервера показывается как есть.
+- ESLint (`i18next/no-literal-string`) не пропускает непереведённый текст в JSX и в `aria-label` / `placeholder` / `title` / `alt`.
+
+## Надёжность
+
+- Каждый запрос обрывается через **30 с** (`AbortSignal.timeout`) — пользователь видит «Сервер не ответил».
+- Идемпотентные запросы (`getStateInstance`, `getSettings`, `deleteNotification`) повторяются при сетевых ошибках, таймауте, 429 и 5xx — **прогрессивный backoff с джиттером**. `sendMessage` не повторяется: POST не идемпотентен, повтор мог бы доставить сообщение дважды.
+- Цикл опроса не может заблокировать event loop: каждая итерация отдаёт макротаску, пустые ответы — не чаще раза в 250 мс (если сервер не держит long-poll), застрявшее в очереди уведомление и сбои уходят в backoff до 30 с.
+
+## Тесты
+
+User stories и тест-кейсы — в [`docs/user-stories.md`](docs/user-stories.md). ID кейса стоит в названии теста.
+
+| Уровень        | Где                           | Что                                                                |
+| -------------- | ----------------------------- | ------------------------------------------------------------------ |
+| Unit           | рядом с кодом, `*.test.ts(x)` | lib, схемы, стор, парсинг, ошибки, цикл опроса, хуки, UI-kit       |
+| Интеграционные | `src/app/stories/`            | каждая user story: всё приложение в jsdom + MSW-мок GREEN-API      |
+| E2E            | `e2e/` (Playwright)           | основной сценарий, reload, выход, мобильная ширина — в демо-режиме |
+
+```bash
+npm test                 # unit + интеграционные
+npm run test:coverage    # порог 100% по statements / branches / functions / lines (в CI пока не гейт)
+npx playwright install chromium && npm run test:e2e
+```
+
+Под Vitest React Compiler отключён: он только мемоизирует, а его ветки кэша искажали бы покрытие. Прод-сборка — с компилятором.
+
 ## Стек
 
 - **React 19** + **React Compiler** (без ручных `useMemo`/`useCallback`), Vite 8, TypeScript strict
@@ -107,6 +146,20 @@ src/
 | `npm run typecheck`          | `tsc -b`                                         |
 | `npm test` / `test:coverage` | Vitest                                           |
 | `npm run api:gen`            | перегенерировать `src/shared/api/gen` из OpenAPI |
+| `npm run test:e2e`           | Playwright в демо-режиме                         |
+
+## CI/CD
+
+GitHub Actions, `.github/workflows/`:
+
+| Workflow     | Когда                  | Что                                                                                                          |
+| ------------ | ---------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `ci.yml`     | push в `dev`, любой PR | параллельно: Prettier + ESLint + steiger + `tsc` + сверка `api:gen` с OpenAPI · Vitest · Playwright · сборка |
+| `deploy.yml` | push в `main`, вручную | тот же CI, затем демо-сборка (`VITE_DEMO_MODE=on`) на GitHub Pages                                           |
+
+Сборка на Pages идёт под путём `/<repo>/` (`VITE_BASE_PATH`), MSW-воркер берётся оттуда же. Отчёт Playwright при падении — в артефактах.
+
+Один раз после создания репозитория: **Settings → Pages → Source: GitHub Actions**.
 
 ## Git flow
 

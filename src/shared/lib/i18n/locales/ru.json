@@ -1,0 +1,123 @@
+{
+  "common": {
+    "loading": "Загрузка",
+    "close": "Закрыть",
+    "language": "Язык интерфейса",
+    "error": "Ошибка",
+    "nothingFound": "Ничего не найдено"
+  },
+  "signIn": {
+    "title": "С какими данными GREEN-API хотите войти?",
+    "apiUrlPlaceholder": "apiUrl — https://…api.green-api.com",
+    "idInstancePlaceholder": "idInstance",
+    "apiTokenInstancePlaceholder": "apiTokenInstance",
+    "hint": "Данные инстанса есть в личном кабинете GREEN-API — нажмите «?», чтобы узнать где",
+    "submit": "Войти",
+    "disclaimer": "Данные хранятся только в этом браузере и уходят напрямую в <strong>GREEN-API</strong>",
+    "openConsole": "Открыть личный кабинет GREEN-API",
+    "notReady": "Инстанс не готов к работе",
+    "problems": {
+      "notAuthorized": "Инстанс не авторизован в MAX — отсканируйте QR-код в личном кабинете.",
+      "webhookUrlSet": "В настройках инстанса задан webhookUrl — очистите его, иначе HTTP API не получит уведомления.",
+      "notificationsDisabled": "Включите входящие уведомления и уведомления об отправке через API в настройках инстанса."
+    },
+    "help": {
+      "trigger": "Где взять данные",
+      "title": "Где взять данные",
+      "step1": "Откройте <link>личный кабинет GREEN-API</link> и выберите инстанс MAX.",
+      "step2": "Скопируйте apiUrl, idInstance и apiTokenInstance со страницы инстанса.",
+      "step3": "В настройках инстанса оставьте webhookUrl пустым и включите уведомления."
+    },
+    "demo": {
+      "description": "Демо: подойдут любые данные",
+      "fill": "Подставить"
+    }
+  },
+  "chats": {
+    "title": "Чаты",
+    "instance": "Инстанс {{id}}",
+    "list": "Список чатов",
+    "empty": "Введите номер получателя, чтобы начать переписку",
+    "signOut": "Выйти",
+    "fallbackTitle": "Чат {{id}}",
+    "noMessages": "Нет сообщений",
+    "you": "Вы: {{text}}"
+  },
+  "createChat": {
+    "phoneLabel": "Номер телефона получателя",
+    "submit": "Создать чат"
+  },
+  "phoneInput": {
+    "countryCode": "Код страны: {{country}} +{{code}}",
+    "picker": "Выбор страны",
+    "search": "Найти страну"
+  },
+  "chat": {
+    "placeholder": "Выберите чат или создайте новый",
+    "region": "Чат: {{title}}",
+    "back": "Назад к чатам",
+    "messages": "Сообщения",
+    "noMessages": "Сообщений пока нет — напишите первым",
+    "status": {
+      "pending": "Отправляется",
+      "sent": "Отправлено",
+      "failed": "Не отправлено"
+    }
+  },
+  "sendMessage": {
+    "label": "Сообщение",
+    "placeholder": "Сообщение",
+    "submit": "Отправить"
+  },
+  "validation": {
+    "apiUrl": "Укажите apiUrl из личного кабинета",
+    "idInstance": "idInstance состоит только из цифр",
+    "apiTokenInstance": "Укажите apiTokenInstance",
+    "phoneRequired": "Введите номер телефона",
+    "phoneFormat": "Введите номер в формате +7 999 123-45-67",
+    "messageRequired": "Введите сообщение",
+    "invalid": "Проверьте значение"
+  },
+  "errors": {
+    "unknown": "Произошла неизвестная серверная ошибка",
+    "network": "Нет соединения с сервером GREEN-API — проверьте apiUrl и сеть",
+    "timeout": "Сервер не ответил — попробуйте ещё раз",
+    "checkFields": "Проверьте поля формы",
+    "server": "Сервер GREEN-API недоступен",
+    "status": {
+      "400": "Некорректный запрос",
+      "401": "Неверный idInstance или apiTokenInstance",
+      "403": "Доступ запрещён — проверьте apiTokenInstance",
+      "404": "Инстанс не найден — проверьте apiUrl и idInstance",
+      "429": "Слишком много запросов, попробуйте позже",
+      "466": "Исчерпан лимит запросов по тарифу"
+    }
+  },
+  "countries": {
+    "ru": "Россия",
+    "by": "Беларусь",
+    "az": "Азербайджан",
+    "am": "Армения",
+    "ge": "Грузия",
+    "kz": "Казахстан",
+    "kg": "Кыргызстан",
+    "md": "Молдова",
+    "tj": "Таджикистан",
+    "uz": "Узбекистан"
+  },
+  "demoMode": {
+    "toggle": "Демо-режим",
+    "on": "Демо-режим включён: GREEN-API подменён моком",
+    "off": "Включить демо-режим без настоящего инстанса"
+  },
+  "seo": {
+    "signIn": {
+      "title": "Вход",
+      "description": "Веб-чат MAX через GREEN-API: войдите по idInstance и apiTokenInstance, чтобы переписываться с контактами MAX."
+    },
+    "messenger": {
+      "title": "Чаты",
+      "description": "Переписка в MAX через HTTP API GREEN-API."
+    }
+  }
+}

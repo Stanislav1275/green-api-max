@@ -1,0 +1,123 @@
+{
+  "common": {
+    "loading": "Loading",
+    "close": "Close",
+    "language": "Interface language",
+    "error": "Error",
+    "nothingFound": "Nothing found"
+  },
+  "signIn": {
+    "title": "Which GREEN-API instance do you want to sign in with?",
+    "apiUrlPlaceholder": "apiUrl — https://…api.green-api.com",
+    "idInstancePlaceholder": "idInstance",
+    "apiTokenInstancePlaceholder": "apiTokenInstance",
+    "hint": "Instance credentials are in your GREEN-API console — tap “?” to see where",
+    "submit": "Sign in",
+    "disclaimer": "Credentials stay in this browser and go straight to <strong>GREEN-API</strong>",
+    "openConsole": "Open GREEN-API console",
+    "notReady": "The instance is not ready",
+    "problems": {
+      "notAuthorized": "The instance is not authorized in MAX — scan the QR code in the console.",
+      "webhookUrlSet": "webhookUrl is set in the instance settings — clear it, otherwise HTTP API gets no notifications.",
+      "notificationsDisabled": "Enable incoming notifications and API sending notifications in the instance settings."
+    },
+    "help": {
+      "trigger": "Where to find credentials",
+      "title": "Where to find credentials",
+      "step1": "Open the <link>GREEN-API console</link> and pick your MAX instance.",
+      "step2": "Copy apiUrl, idInstance and apiTokenInstance from the instance page.",
+      "step3": "In the instance settings keep webhookUrl empty and enable notifications."
+    },
+    "demo": {
+      "description": "Demo: any credentials work",
+      "fill": "Fill in"
+    }
+  },
+  "chats": {
+    "title": "Chats",
+    "instance": "Instance {{id}}",
+    "list": "Chat list",
+    "empty": "Enter a recipient's phone number to start a conversation",
+    "signOut": "Sign out",
+    "fallbackTitle": "Chat {{id}}",
+    "noMessages": "No messages",
+    "you": "You: {{text}}"
+  },
+  "createChat": {
+    "phoneLabel": "Recipient's phone number",
+    "submit": "Start chat"
+  },
+  "phoneInput": {
+    "countryCode": "Country code: {{country}} +{{code}}",
+    "picker": "Choose a country",
+    "search": "Find a country"
+  },
+  "chat": {
+    "placeholder": "Pick a chat or start a new one",
+    "region": "Chat: {{title}}",
+    "back": "Back to chats",
+    "messages": "Messages",
+    "noMessages": "No messages yet — say hi first",
+    "status": {
+      "pending": "Sending",
+      "sent": "Sent",
+      "failed": "Not sent"
+    }
+  },
+  "sendMessage": {
+    "label": "Message",
+    "placeholder": "Message",
+    "submit": "Send"
+  },
+  "validation": {
+    "apiUrl": "Enter the apiUrl from your console",
+    "idInstance": "idInstance contains digits only",
+    "apiTokenInstance": "Enter the apiTokenInstance",
+    "phoneRequired": "Enter a phone number",
+    "phoneFormat": "Enter a number like +7 999 123-45-67",
+    "messageRequired": "Type a message",
+    "invalid": "Check this value"
+  },
+  "errors": {
+    "unknown": "An unknown server error occurred",
+    "network": "Can't reach the GREEN-API server — check apiUrl and your connection",
+    "timeout": "The server did not respond — please try again",
+    "checkFields": "Check the form fields",
+    "server": "GREEN-API server is unavailable",
+    "status": {
+      "400": "Bad request",
+      "401": "Wrong idInstance or apiTokenInstance",
+      "403": "Access denied — check apiTokenInstance",
+      "404": "Instance not found — check apiUrl and idInstance",
+      "429": "Too many requests, try again later",
+      "466": "Your plan's request limit is exhausted"
+    }
+  },
+  "countries": {
+    "ru": "Russia",
+    "by": "Belarus",
+    "az": "Azerbaijan",
+    "am": "Armenia",
+    "ge": "Georgia",
+    "kz": "Kazakhstan",
+    "kg": "Kyrgyzstan",
+    "md": "Moldova",
+    "tj": "Tajikistan",
+    "uz": "Uzbekistan"
+  },
+  "demoMode": {
+    "toggle": "Demo mode",
+    "on": "Demo mode is on: GREEN-API is mocked",
+    "off": "Turn on demo mode, no real instance needed"
+  },
+  "seo": {
+    "signIn": {
+      "title": "Sign in",
+      "description": "A MAX web chat over GREEN-API: sign in with idInstance and apiTokenInstance to message your MAX contacts."
+    },
+    "messenger": {
+      "title": "Chats",
+      "description": "MAX messaging over the GREEN-API HTTP API."
+    }
+  }
+}

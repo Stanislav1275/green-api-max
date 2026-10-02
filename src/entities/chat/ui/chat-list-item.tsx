@@ -1,5 +1,6 @@
 import { cn } from '@/shared/lib/cn'
 import { formatTime } from '@/shared/lib/format'
+import { useTranslation } from '@/shared/lib/i18n'
 
 import { getChatTitle } from '../lib/chat-title'
 import type { Chat } from '../model/types'
@@ -12,7 +13,8 @@ type ChatListItemProps = {
 }
 
 export const ChatListItem = ({ chat, active, onSelect }: ChatListItemProps) => {
-  const title = getChatTitle(chat)
+  const { t, i18n } = useTranslation()
+  const title = getChatTitle(chat, t)
   const lastMessage = chat.messages.at(-1)
 
   return (
@@ -23,24 +25,26 @@ export const ChatListItem = ({ chat, active, onSelect }: ChatListItemProps) => {
         onSelect(chat.id)
       }}
       className={cn(
-        'flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition-colors hover:bg-muted',
-        active && 'bg-secondary hover:bg-secondary',
+        'flex w-full cursor-pointer items-center gap-3 rounded-xl px-2.5 py-2 text-left transition-colors outline-none hover:bg-hover focus-visible:ring-2 focus-visible:ring-ring',
+        active && 'bg-muted hover:bg-muted',
       )}
     >
-      <ChatAvatar seed={chat.id} title={title} className="size-12" />
+      <ChatAvatar seed={chat.id} title={title} className="size-13 text-lg" />
       <span className="grid min-w-0 flex-1 gap-0.5">
         <span className="flex items-baseline justify-between gap-2">
-          <span className="truncate font-medium">{title}</span>
+          <span className="truncate text-[15px] font-medium">{title}</span>
           {lastMessage ? (
-            <span className="shrink-0 text-xs text-muted-foreground">
-              {formatTime(lastMessage.timestamp)}
+            <span className="shrink-0 text-xs text-subtle-foreground">
+              {formatTime(lastMessage.timestamp, i18n.language)}
             </span>
           ) : null}
         </span>
-        <span className="truncate text-sm text-muted-foreground">
+        <span className="truncate text-sm text-subtle-foreground">
           {lastMessage
-            ? `${lastMessage.direction === 'out' ? 'Вы: ' : ''}${lastMessage.text}`
-            : 'Нет сообщений'}
+            ? lastMessage.direction === 'out'
+              ? t('chats.you', { text: lastMessage.text })
+              : lastMessage.text
+            : t('chats.noMessages')}
         </span>
       </span>
     </button>

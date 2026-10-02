@@ -3,6 +3,7 @@ import eslintReact from '@eslint-react/eslint-plugin'
 import prettier from 'eslint-config-prettier'
 import boundaries from 'eslint-plugin-boundaries'
 import checkFile from 'eslint-plugin-check-file'
+import i18next from 'eslint-plugin-i18next'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
@@ -37,7 +38,7 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
       parserOptions: {
-        project: ['./tsconfig.app.json', './tsconfig.node.json'],
+        project: ['./tsconfig.app.json', './tsconfig.node.json', './tsconfig.e2e.json'],
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -121,6 +122,42 @@ export default defineConfig([
     },
   },
   {
+    // every user-visible string goes through the ru/en dictionaries
+    files: ['src/**/*.tsx'],
+    ignores: ['src/**/*.test.tsx', 'src/app/stories/**'],
+    plugins: { i18next },
+    rules: {
+      'i18next/no-literal-string': [
+        'error',
+        {
+          mode: 'jsx-only',
+          'jsx-attributes': { include: ['aria-label', 'placeholder', 'title', 'alt'] },
+        },
+      ],
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'react-i18next',
+              message: 'Import from @/shared/lib/i18n: it guarantees i18next is initialized.',
+            },
+          ],
+          patterns: [
+            {
+              group: ['@/*/*/*', '!@/shared/*/*'],
+              message: 'Import slices only through their public API (index.ts).',
+            },
+            {
+              group: ['../*/../*', '../../*'],
+              message: 'Use the @/ alias for cross-slice imports.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['src/**/*.test.{ts,tsx}', 'src/shared/lib/test/**'],
     rules: {
       '@typescript-eslint/no-non-null-assertion': 'off',
@@ -130,6 +167,14 @@ export default defineConfig([
   {
     files: ['*.config.{js,ts}', 'e2e/**/*.ts'],
     languageOptions: { globals: globals.node },
+  },
+  {
+    // Playwright fixtures call `use()`, which is not a React hook
+    files: ['e2e/**/*.ts'],
+    rules: {
+      'react-hooks/rules-of-hooks': 'off',
+      '@eslint-react/rules-of-hooks': 'off',
+    },
   },
   prettier,
 ])

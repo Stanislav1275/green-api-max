@@ -3,14 +3,8 @@ import * as z from 'zod'
 import { ResponseError } from '../gen/.kubb/client'
 import { type AppError, UNKNOWN_ERROR_MESSAGE } from './app-error'
 
-const STATUS_MESSAGES: Partial<Record<number, string>> = {
-  400: 'Некорректный запрос',
-  401: 'Неверный idInstance или apiTokenInstance',
-  403: 'Доступ запрещён — проверьте apiTokenInstance',
-  404: 'Инстанс не найден — проверьте apiUrl и idInstance',
-  429: 'Слишком много запросов, попробуйте позже',
-  466: 'Исчерпан лимит запросов по тарифу',
-}
+/** translation keys (errors.status.*) for statuses with a known meaning */
+const KNOWN_STATUSES = new Set([400, 401, 403, 404, 429, 466])
 
 /**
  * Client-side contract for error bodies. GREEN-API is not consistent here,
@@ -56,9 +50,13 @@ const fromResponse = (status: number, body: ErrorBody | null): AppError => {
   const serverMessage = body?.message ?? body?.details ?? body?.error
 
   if ((status === 400 || status === 422) && Object.keys(fields).length > 0) {
-    return { kind: 'validation', message: serverMessage ?? 'Проверьте поля формы', fields }
+    return { kind: 'validation', message: serverMessage ?? 'errors.checkFields', fields }
   }
-  const message = STATUS_MESSAGES[status] ?? (status >= 500 ? 'Сервер GREEN-API недоступен' : null)
+  const message = KNOWN_STATUSES.has(status)
+    ? `errors.status.${status}`
+    : status >= 500
+      ? 'errors.server'
+      : null
   if (message) {
     return {
       kind: 'http',
@@ -71,6 +69,9 @@ const fromResponse = (status: number, body: ErrorBody | null): AppError => {
 
 /** Turns anything thrown by a request into one of a few shapes the UI knows how to show. */
 export const normalizeError = async (error: unknown): Promise<AppError> => {
+  if (error instanceof DOMException && error.name === 'TimeoutError') {
+    return { kind: 'timeout', message: 'errors.timeout' }
+  }
   if (error instanceof DOMException && error.name === 'AbortError') {
     return { kind: 'aborted', message: error.message }
   }
@@ -84,7 +85,7 @@ export const normalizeError = async (error: unknown): Promise<AppError> => {
   if (error instanceof TypeError) {
     return {
       kind: 'network',
-      message: 'Нет соединения с сервером GREEN-API — проверьте apiUrl и сеть',
+      message: 'errors.network',
     }
   }
   return { kind: 'unknown', message: UNKNOWN_ERROR_MESSAGE }

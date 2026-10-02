@@ -12,15 +12,17 @@ const Root = ({ className, ...props }: ComponentProps<typeof BaseField.Root>) =>
 const Label = ({ className, ...props }: ComponentProps<typeof BaseField.Label>) => (
   <BaseField.Label
     data-slot="field-label"
-    className={cn('text-sm font-medium', className)}
+    className={cn('px-1 text-sm text-muted-foreground', className)}
     {...props}
   />
 )
 
-const Control = ({ className, ...props }: ComponentProps<typeof BaseField.Control>) => (
+/** Unstyled when used with `render` (e.g. a textarea brings its own styles). */
+const Control = ({ className, render, ...props }: ComponentProps<typeof BaseField.Control>) => (
   <BaseField.Control
     data-slot="field-control"
-    className={cn(inputClassName, className)}
+    render={render}
+    className={render ? className : cn(inputClassName, className)}
     {...props}
   />
 )
@@ -28,7 +30,7 @@ const Control = ({ className, ...props }: ComponentProps<typeof BaseField.Contro
 const Description = ({ className, ...props }: ComponentProps<typeof BaseField.Description>) => (
   <BaseField.Description
     data-slot="field-description"
-    className={cn('text-xs text-muted-foreground', className)}
+    className={cn('px-4 text-[13px] leading-snug text-subtle-foreground', className)}
     {...props}
   />
 )
@@ -36,7 +38,7 @@ const Description = ({ className, ...props }: ComponentProps<typeof BaseField.De
 const Error = ({ className, ...props }: ComponentProps<typeof BaseField.Error>) => (
   <BaseField.Error
     data-slot="field-error"
-    className={cn('text-xs text-destructive', className)}
+    className={cn('px-4 text-[13px] text-destructive', className)}
     {...props}
   />
 )

@@ -1,4 +1,4 @@
-export { type AppError, normalizeError, UNKNOWN_ERROR_MESSAGE } from './errors'
+export { type AppError, isRetryableError, normalizeError, UNKNOWN_ERROR_MESSAGE } from './errors'
 export type {
   Notification,
   NotificationBody,
@@ -8,4 +8,10 @@ export type {
   StateInstance,
 } from './gen/types'
 export { notificationBodySchema, sendMessageRequestSchema } from './gen/zod'
-export { createGreenApi, type GreenApi, type GreenApiCredentials } from './green-api'
+export {
+  createGreenApi,
+  type GreenApi,
+  type GreenApiCredentials,
+  RECEIVE_TIMEOUT_SECONDS,
+  REQUEST_TIMEOUT_MS,
+} from './green-api'

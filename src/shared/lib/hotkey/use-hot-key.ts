@@ -1,0 +1,65 @@
+import { type KeyboardEvent as ReactKeyboardEvent, useEffect, useEffectEvent } from 'react'
+
+import { matchesHotKey } from './match-hot-key'
+
+export type HotKeyOptions = {
+  /** @default true */
+  preventDefault?: boolean
+}
+
+/** `['Enter', submit]`, `[['Mod+Enter', 'Ctrl+S'], save, { preventDefault: false }]` */
+export type HotKeyBinding<TEvent> = readonly [
+  combo: string | readonly string[],
+  handler: (event: TEvent) => void,
+  options?: HotKeyOptions,
+]
+
+const handleBindings = <TEvent extends { preventDefault: () => void }>(
+  bindings: readonly HotKeyBinding<TEvent>[],
+  event: TEvent,
+  nativeEvent: KeyboardEvent,
+) => {
+  // never hijack keys while an IME is composing (Chinese, Japanese, Korean input)
+  if (nativeEvent.isComposing) {
+    return
+  }
+  const binding = bindings.find(([combo]) =>
+    (typeof combo === 'string' ? [combo] : combo).some((key) => matchesHotKey(nativeEvent, key)),
+  )
+  if (!binding) {
+    return
+  }
+  const [, handler, { preventDefault = true } = {}] = binding
+  if (preventDefault) {
+    event.preventDefault()
+  }
+  handler(event)
+}
+
+/**
+ * Element shortcuts from a list of `[combo, handler, options?]` bindings; the first match wins.
+ * Returns an `onKeyDown`; handlers get the React event, so `event.currentTarget` is typed.
+ */
+// eslint-disable-next-line @eslint-react/no-unnecessary-use-prefix -- paired with useGlobalHotKey, called in render
+export const useHotKey =
+  <TElement extends Element>(bindings: readonly HotKeyBinding<ReactKeyboardEvent<TElement>>[]) =>
+  (event: ReactKeyboardEvent<TElement>) => {
+    handleBindings(bindings, event, event.nativeEvent)
+  }
+
+/** Same bindings on `window`, subscribed once; handlers always see the latest render's closures. */
+export const useGlobalHotKey = (bindings: readonly HotKeyBinding<KeyboardEvent>[]) => {
+  const onKeyDown = useEffectEvent((event: KeyboardEvent) => {
+    handleBindings(bindings, event, event)
+  })
+
+  useEffect(() => {
+    const listener = (event: KeyboardEvent) => {
+      onKeyDown(event)
+    }
+    window.addEventListener('keydown', listener)
+    return () => {
+      window.removeEventListener('keydown', listener)
+    }
+  }, [])
+}
