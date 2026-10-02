@@ -1,3 +1,4 @@
+import { CSPProvider } from '@base-ui/react/csp-provider'
 import { LucideProvider } from 'lucide-react'
 
 import { useCredentials } from '@/entities/session'
@@ -13,12 +14,15 @@ const Screen = () => {
 }
 
 export const App = () => (
-  // 20px is the default icon size; `size` on an icon still overrides it
-  <LucideProvider size={20} className="shrink-0">
-    <ToastProvider>
-      <QueryProvider>
-        <Screen />
-      </QueryProvider>
-    </ToastProvider>
-  </LucideProvider>
+  // the CSP has no 'unsafe-inline' styles, so Base UI's <style> tags live in global.css
+  <CSPProvider disableStyleElements>
+    {/* 20px is the default icon size; `size` on an icon still overrides it */}
+    <LucideProvider size={20} className="shrink-0">
+      <ToastProvider>
+        <QueryProvider>
+          <Screen />
+        </QueryProvider>
+      </ToastProvider>
+    </LucideProvider>
+  </CSPProvider>
 )
