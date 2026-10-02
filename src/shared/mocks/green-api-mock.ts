@@ -13,9 +13,7 @@ import { sendMessageRequestSchema } from '@/shared/api/gen/zod'
 const INSTANCE = '*/waInstance:idInstance'
 
 type GreenApiMockOptions = {
-  /** how long an empty long-poll hangs before returning `null` */
   emptyQueueDelayMs?: number
-  /** how long the fake contact "types" the echo reply */
   replyDelayMs?: number
 }
 
@@ -25,7 +23,6 @@ type MessageOptions = {
   name?: string
 }
 
-// MAX addresses a private chat by a numeric id, not by `phone@c.us`
 export const toMaxChatId = (phone: string) => String(Number(phone.slice(-8)) + 10_000_000)
 
 const now = () => Math.floor(Date.now() / 1000)
@@ -35,11 +32,6 @@ const textMessage = (text: string) => ({
   textMessageData: { textMessage: text },
 })
 
-/**
- * In-memory GREEN-API: a FIFO notification queue that behaves like the real one —
- * every sent message comes back as `outgoingAPIMessageReceived`, and the contact
- * answers with an echo addressed by a numeric MAX chat id.
- */
 export const createGreenApiMock = ({
   emptyQueueDelayMs = 1_000,
   replyDelayMs = 1_500,
@@ -55,7 +47,6 @@ export const createGreenApiMock = ({
     queue.push({ receiptId: lastReceiptId, body })
   }
 
-  /** a contact writes to us */
   const replyFrom = ({ phone, text, name = '' }: MessageOptions) => {
     const chatId = toMaxChatId(phone)
     enqueue(
@@ -77,7 +68,6 @@ export const createGreenApiMock = ({
     )
   }
 
-  /** the account owner writes from the MAX app on their phone */
   const outgoingFromPhone = ({ phone, text }: MessageOptions) => {
     enqueue(
       createNotificationBody({
@@ -158,7 +148,6 @@ export const createGreenApiMock = ({
     setAutoReply: (enabled: boolean) => {
       autoReply = enabled
     },
-    /** request bodies received by `sendMessage`, oldest first */
     getSentMessages: () => [...sentMessages],
     getQueueSize: () => queue.length,
     reset: () => {

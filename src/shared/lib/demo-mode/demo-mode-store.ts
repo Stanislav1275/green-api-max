@@ -3,12 +3,6 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 
 import { startMockWorker, stopMockWorker } from './mock-worker'
 
-/**
- * `VITE_DEMO_MODE`:
- * - `off` (default) — real GREEN-API only, no toggle;
- * - `available` — the toggle is shown, demo starts switched off;
- * - `on` — the toggle is shown, demo starts switched on.
- */
 const DEMO_MODE = import.meta.env.VITE_DEMO_MODE ?? 'off'
 
 export const DEMO_MODE_AVAILABLE = DEMO_MODE !== 'off'
@@ -19,7 +13,6 @@ type DemoModeState = {
   setEnabled: (enabled: boolean) => Promise<void>
 }
 
-/** Whether GREEN-API is served by the MSW mock; the choice survives reloads. */
 export const useDemoModeStore = create<DemoModeState>()(
   persist(
     (set) => ({
@@ -49,7 +42,6 @@ export const useDemoModeStore = create<DemoModeState>()(
 
 export const useDemoMode = () => useDemoModeStore((state) => DEMO_MODE_AVAILABLE && state.enabled)
 
-/** Called once before the first render so persisted demo mode is active from the start. */
 export const initDemoMode = async () => {
   if (DEMO_MODE_AVAILABLE && useDemoModeStore.getState().enabled) {
     await startMockWorker()

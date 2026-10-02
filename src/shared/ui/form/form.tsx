@@ -8,15 +8,10 @@ type FormProps<TInput extends FieldValues, TOutput extends FieldValues> = Omit<
   'onSubmit'
 > & {
   form: UseFormReturn<TInput, unknown, TOutput>
-  /** may be async: a rejection is resolved into field errors or a toast */
   onSubmit: (values: TOutput) => unknown
   resetOnSubmit?: boolean
 }
 
-/**
- * `<form>` + react-hook-form context: children (`FormField`, `FormSubmit`) read the form
- * from context, so screens never touch `register`, `control`, `handleSubmit` or `reset`.
- */
 export const Form = <TInput extends FieldValues, TOutput extends FieldValues>({
   form,
   onSubmit,

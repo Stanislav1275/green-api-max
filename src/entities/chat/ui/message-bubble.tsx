@@ -12,7 +12,6 @@ const STATUS_ICON = {
   failed: CircleAlert,
 }
 
-/** MAX bubble: 16px radius, gradient for own messages, time tucked into the last line. */
 export const MessageBubble = ({ message }: { message: Message }) => {
   const { t, i18n } = useTranslation()
   const outgoing = message.direction === 'out'
@@ -29,7 +28,6 @@ export const MessageBubble = ({ message }: { message: Message }) => {
     >
       <p className="break-words whitespace-pre-wrap">
         {message.text}
-        {/* reserves room so the time never overlaps the last line */}
         <span aria-hidden className="inline-block w-14" />
       </p>
       <p

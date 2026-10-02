@@ -5,7 +5,6 @@ import { translate } from '@/shared/lib/i18n'
 
 import { Field } from '../field'
 
-/** Field error text (client zod or server `setError`); renders only when there is a message. */
 export const FormMessage = ({
   className,
   children,

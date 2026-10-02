@@ -5,7 +5,6 @@ import { DEMO_MODE_AVAILABLE, useDemoMode, useDemoModeStore } from '@/shared/lib
 import { useTranslation } from '@/shared/lib/i18n'
 import { Button } from '@/shared/ui/button'
 
-/** Switches GREEN-API between the real server and the in-browser mock; hidden unless the env allows it. */
 export const DemoModeToggle = () => {
   const { t } = useTranslation()
   const enabled = useDemoMode()

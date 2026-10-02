@@ -5,7 +5,6 @@ import { invariant } from '@/shared/lib/invariant'
 
 const { message } = sendMessageRequestSchema.shape
 
-/** Limit comes from the OpenAPI spec (via Kubb); the client adds trimming and "not empty". */
 export const MAX_MESSAGE_LENGTH = invariant(
   message.maxLength,
   'sendMessage.message.maxLength in the OpenAPI spec',

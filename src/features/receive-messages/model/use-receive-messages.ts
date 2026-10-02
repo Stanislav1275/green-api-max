@@ -6,7 +6,6 @@ import { createGreenApi } from '@/shared/api'
 
 import { pollNotifications } from './poll-notifications'
 
-/** Keeps a single long-polling loop - сокеты бы, эээх))) */
 export const useReceiveMessages = () => {
   const credentials = useCredentials()
   const applyEvent = useChatStore((state) => state.applyEvent)

@@ -81,7 +81,6 @@ describe('ui-kit', () => {
     toast.success('Сохранено', 'Готово')
     toast.error('Сломалось')
 
-    // each toast is also mirrored into an aria-live region, hence *All*
     expect(await screen.findAllByText('Сохранено')).not.toHaveLength(0)
     expect(await screen.findAllByText('Сломалось')).not.toHaveLength(0)
   })

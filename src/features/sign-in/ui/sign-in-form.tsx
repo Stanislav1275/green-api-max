@@ -9,7 +9,6 @@ import { Form, FormField, FormSubmit } from '@/shared/ui/form'
 import { DEMO_CREDENTIALS } from '../model/demo-credentials'
 import { InstanceNotReadyError, useSignIn } from '../model/use-sign-in'
 
-/** web.max.ru sign-in field: 52px tall, 16px radius, 17px text */
 const FIELD_CLASS = 'h-13 rounded-xl px-4 md:text-[17px]'
 
 export const SignInForm = () => {
@@ -17,7 +16,6 @@ export const SignInForm = () => {
   const signIn = useSignIn()
   const isDemo = useDemoMode()
   const form = useZodForm(credentialsSchema, {
-    // deploy-time prefill is a UI concern, so it is not baked into the entity schema
     defaultValues: { apiUrl: import.meta.env.VITE_DEFAULT_API_URL ?? '' },
   })
 
@@ -29,7 +27,6 @@ export const SignInForm = () => {
         try {
           await signIn.mutateAsync(credentials)
         } catch (error) {
-          // shown inline below; anything else goes to field errors or a toast
           if (!(error instanceof InstanceNotReadyError)) {
             throw error
           }

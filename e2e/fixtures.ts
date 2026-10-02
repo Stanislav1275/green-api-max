@@ -29,7 +29,6 @@ class ChatApp {
 }
 
 export const test = base.extend<{ app: ChatApp }>({
-  // every scenario also checks that the production CSP blocks nothing the app needs
   app: async ({ page }, use) => {
     const violations: string[] = []
     page.on('console', (message) => {

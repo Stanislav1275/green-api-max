@@ -2,7 +2,6 @@ import * as z from 'zod'
 
 import { normalizePhone } from './phone'
 
-/** Client-side phone field: accepts any human formatting, outputs international digits. */
 export const phoneSchema = z
   .string()
   .trim()

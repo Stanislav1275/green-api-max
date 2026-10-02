@@ -29,11 +29,6 @@ const upsertMessage = (messages: Message[], message: Message) =>
     ? messages
     : [...messages, message].sort((a, b) => a.timestamp - b.timestamp)
 
-/**
- * MAX notifications address chats by a numeric id while we create chats by phone.
- * Resolve the chat an event belongs to: by phone, by a remembered MAX id,
- * or by an outgoing message we sent from this client.
- */
 const findChat = (chats: Record<string, Chat>, event: MessageEvent) =>
   Object.values(chats).find(
     (chat) =>
@@ -86,7 +81,6 @@ export const useChatStore = create<ChatState>()(
           if (!chat) {
             return state
           }
-          // the notification about this message may have already arrived under its real id
           const alreadyReceived =
             patch.id !== undefined && chat.messages.some(({ id }) => id === patch.id)
           const messages = alreadyReceived
@@ -101,7 +95,6 @@ export const useChatStore = create<ChatState>()(
       applyEvent: (event) => {
         set((state) => {
           const existing = findChat(state.chats, event)
-          // a chat born from a queued notification is as old as its message, not "now"
           const chat =
             existing ?? emptyChat(event.phone ?? event.maxChatId, event.phone, event.timestamp)
           const message: Message = {

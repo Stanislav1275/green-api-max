@@ -6,7 +6,6 @@ vi.hoisted(() => {
   vi.stubEnv('VITE_DEMO_MODE', 'available')
 })
 
-// jsdom has no service workers; GREEN-API is already served by the test MSW server
 const worker = vi.hoisted(() => ({ start: vi.fn(() => Promise.resolve()), stop: vi.fn() }))
 
 vi.mock('msw/browser', () => ({ setupWorker: () => worker }))

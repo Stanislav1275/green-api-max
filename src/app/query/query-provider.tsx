@@ -5,7 +5,6 @@ import { resolveErrorAsync } from '@/shared/lib/errors'
 
 const createQueryClient = () =>
   new QueryClient({
-    // one place where failed POST/PUT/PATCH/DELETE turn into a toast
     mutationCache: new MutationCache({
       onError: (error, _variables, _context, mutation) => {
         if (!mutation.meta?.manualErrorHandling) {

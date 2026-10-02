@@ -14,7 +14,6 @@ export const SendMessageForm = ({ chat }: { chat: Chat }) => {
   const { t } = useTranslation()
   const { send } = useSendMessage()
   const form = useZodForm(sendMessageSchema)
-  // Enter sends; Shift+Enter is not matched and keeps inserting a line break
   const handleKeyDown = useHotKey<HTMLFormElement>([
     [
       'Enter',

@@ -3,10 +3,8 @@ import tailwindcss from '@tailwindcss/vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
 
-// the compiler only memoizes; under Vitest its cache branches would pollute coverage
 const reactCompiler = process.env.VITEST ? [] : [babel({ presets: [reactCompilerPreset()] })]
 
-// GitHub Pages can't send headers, so the policy goes into a <meta>; dev is left alone for HMR
 const CSP = [
   "default-src 'self'",
   "script-src 'self'",

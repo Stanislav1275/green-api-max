@@ -1,6 +1,5 @@
 name: CI
 
-# main is checked by deploy.yml, which calls this workflow before publishing
 on:
   push:
     branches: [dev]
@@ -8,7 +7,6 @@ on:
   workflow_call:
 
 concurrency:
-  # github.workflow is the caller's name when reused, so Deploy never cancels CI and vice versa
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 

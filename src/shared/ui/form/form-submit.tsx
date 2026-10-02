@@ -6,13 +6,10 @@ import { Button, type ButtonProps } from '../button'
 import { Spinner } from '../spinner'
 
 type FormSubmitProps = Omit<ButtonProps, 'type'> & {
-  /** keep disabled until the form passes validation */
   requireValid?: boolean
-  /** keep disabled while any field is empty */
   requireFilled?: boolean
 }
 
-/** Submit button of the surrounding `<Form>`: disabled while submitting, spinner for async submits. */
 export const FormSubmit = ({
   requireValid,
   requireFilled,

@@ -17,7 +17,6 @@ export default defineConfig({
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
   ],
-  // the production demo build, CSP included; GREEN-API is an in-browser MSW mock
   webServer: {
     command: `npm run build:demo && npx vite preview --mode demo --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}`,

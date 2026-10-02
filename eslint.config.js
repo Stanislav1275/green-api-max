@@ -13,7 +13,6 @@ import tseslint from 'typescript-eslint'
 
 const FSD_LAYERS = ['app', 'pages', 'widgets', 'features', 'entities', 'shared']
 
-// each layer may import only from layers below it
 const layerPolicies = FSD_LAYERS.map((layer, index) => ({
   from: { element: { type: layer } },
   allow: {
@@ -99,7 +98,6 @@ export default defineConfig([
           default: 'disallow',
           policies: [
             ...layerPolicies,
-            // imports inside the same layer (same slice via relative paths)
             ...FSD_LAYERS.map((layer) => ({
               from: { element: { type: layer } },
               allow: { to: { element: { type: layer } } },
@@ -122,7 +120,6 @@ export default defineConfig([
     },
   },
   {
-    // every user-visible string goes through the ru/en dictionaries
     files: ['src/**/*.tsx'],
     ignores: ['src/**/*.test.tsx', 'src/app/stories/**'],
     plugins: { i18next },
@@ -169,7 +166,6 @@ export default defineConfig([
     languageOptions: { globals: globals.node },
   },
   {
-    // Playwright fixtures call `use()`, which is not a React hook
     files: ['e2e/**/*.ts'],
     rules: {
       'react-hooks/rules-of-hooks': 'off',

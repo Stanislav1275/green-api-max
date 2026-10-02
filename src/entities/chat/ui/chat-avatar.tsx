@@ -1,7 +1,6 @@
 import { cn } from '@/shared/lib/cn'
 import { Avatar } from '@/shared/ui/avatar'
 
-/** MAX avatar gradients (avatar-chat-*-step-1 → step-2) */
 const GRADIENTS = [
   'from-[#ff48b6] to-[#ff8a35]', // coral
   'from-[#ffc93d] to-[#ff832a]', // orange

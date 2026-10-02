@@ -8,11 +8,9 @@ import { TEST_CREDENTIALS } from '@/shared/lib/test'
 import { App } from '../app'
 
 type RenderAppOptions = {
-  /** start on the messenger screen, as a returning user */
   signedIn?: boolean
 }
 
-/** Renders the whole app the way a user sees it; GREEN-API is served by the MSW mock. */
 export const renderApp = ({ signedIn = false }: RenderAppOptions = {}) => {
   if (signedIn) {
     useSessionStore.getState().signIn(TEST_CREDENTIALS)
@@ -47,7 +45,6 @@ export const renderApp = ({ signedIn = false }: RenderAppOptions = {}) => {
   return { user, view, fillSignIn, submitSignIn, openChat, send, chatList, messages }
 }
 
-/** Simulates a page reload: persisted stores re-read localStorage. */
 export const reloadStores = async () => {
   await useSessionStore.persist.rehydrate()
   await useChatStore.persist.rehydrate()

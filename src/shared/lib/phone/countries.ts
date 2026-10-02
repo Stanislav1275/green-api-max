@@ -1,7 +1,6 @@
 export type CountryCode = 'ru' | 'by' | 'az' | 'am' | 'ge' | 'kz' | 'kg' | 'md' | 'tj' | 'uz'
 
 export type Country = {
-  /** ISO 3166-1 alpha-2, lowercase; the name comes from `countries.<value>` in the dictionaries */
   value: CountryCode
   dialCode: string
   flag: string
@@ -9,7 +8,6 @@ export type Country = {
 
 export const DEFAULT_COUNTRY: Country = { value: 'ru', dialCode: '7', flag: '🇷🇺' }
 
-/** Countries MAX accepts for sign-up (web.max.ru), Russia first. */
 export const COUNTRIES: readonly Country[] = [
   DEFAULT_COUNTRY,
   { value: 'by', dialCode: '375', flag: '🇧🇾' },
@@ -23,7 +21,6 @@ export const COUNTRIES: readonly Country[] = [
   { value: 'uz', dialCode: '998', flag: '🇺🇿' },
 ]
 
-/** Search by the localized name or by dial code: «бел», «bel», «375», «+375». */
 export const matchesCountry = (country: Country, label: string, query: string) => {
   const needle = query.trim().toLowerCase().replace(/^\+/, '')
   return label.toLowerCase().includes(needle) || country.dialCode.startsWith(needle)

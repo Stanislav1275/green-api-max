@@ -20,9 +20,7 @@ export default mergeConfig(
           'src/**/*.d.ts',
           'src/shared/lib/test/**',
           'src/app/stories/render-app.tsx',
-          // entry point: covered by E2E, not by jsdom
           'src/main.tsx',
-          // type-only modules
           'src/**/model/types.ts',
           'src/shared/api/errors/app-error.ts',
         ],

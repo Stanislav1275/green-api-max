@@ -151,7 +151,6 @@ describe('US-1: вход по данным GREEN-API', () => {
     const { submitSignIn } = renderApp()
     await submitSignIn()
 
-    // network errors are retried with backoff before the user is told
     expect(await screen.findByRole('alert', {}, { timeout: 5_000 })).toHaveTextContent(
       'Нет соединения с сервером GREEN-API',
     )

@@ -7,7 +7,6 @@ vi.mock('./mock-worker', () => ({ startMockWorker: worker.start, stopMockWorker:
 
 const load = async (mode: string | undefined) => {
   vi.resetModules()
-  // stores of the previous test persist their reset state after the global cleanup
   localStorage.clear()
   vi.stubEnv('VITE_DEMO_MODE', mode)
   return import('./demo-mode-store')

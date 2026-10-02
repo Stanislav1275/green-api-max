@@ -6,11 +6,9 @@ import { useGreenApi } from '@/entities/session'
 type SendMessageVariables = {
   chat: Pick<Chat, 'id' | 'phone'>
   text: string
-  /** id of the optimistic bubble until the server assigns a real one */
   tempId: string
 }
 
-/** Optimistic send: the bubble appears immediately and is resolved by the API response. */
 export const useSendMessage = () => {
   const api = useGreenApi()
   const addOutgoing = useChatStore((state) => state.addOutgoing)
