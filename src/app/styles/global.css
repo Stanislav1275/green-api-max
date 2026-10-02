@@ -327,4 +327,13 @@
   body {
     @apply bg-background font-sans text-foreground antialiased;
   }
+
+  /* ScrollArea viewport, normally injected by Base UI as an inline <style> */
+  .base-ui-disable-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .base-ui-disable-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }

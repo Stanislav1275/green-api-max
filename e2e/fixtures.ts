@@ -29,8 +29,16 @@ class ChatApp {
 }
 
 export const test = base.extend<{ app: ChatApp }>({
+  // every scenario also checks that the production CSP blocks nothing the app needs
   app: async ({ page }, use) => {
+    const violations: string[] = []
+    page.on('console', (message) => {
+      if (message.type() === 'error' && message.text().includes('Content Security Policy')) {
+        violations.push(message.text())
+      }
+    })
     await use(new ChatApp(page))
+    expect(violations).toEqual([])
   },
 })
 

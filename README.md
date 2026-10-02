@@ -112,9 +112,13 @@ src/
 - **Отвалилась сеть.** Опрос не долбит сервер, а ждёт всё дольше, до 30 с.
 - **Почему не WebSocket.** В MAX API его нет: есть HTTP API и webhook, а webhook требует бэкенда.
 
-### Где хранится токен
+### Безопасность
 
-В `localStorage`, чтобы вход переживал перезагрузку. Бэкенда нет, так что httpOnly-cookie не сделать. От XSS защищает то, что текст сообщений выводится только как текст, без `dangerouslySetInnerHTML`. Для общих компьютеров достаточно сменить хранилище на `sessionStorage` в [`session-store.ts`](src/entities/session/model/session-store.ts). «Выйти» стирает и токен, и историю.
+- **Токен** лежит в `localStorage`, чтобы вход переживал перезагрузку. Бэкенда нет, так что httpOnly-cookie не сделать. Для общих компьютеров достаточно сменить хранилище на `sessionStorage` в [`session-store.ts`](src/entities/session/model/session-store.ts). «Выйти» стирает и токен, и историю.
+- **XSS.** Текст сообщений выводится только как текст, без `dangerouslySetInnerHTML`.
+- **CSP.** В прод-сборке есть строгий Content-Security-Policy: никаких inline-скриптов и стилей, запросы — только к `*.green-api.com`. Даже если XSS случится, токен не утечёт на чужой сервер. E2E гоняются на прод-сборке и падают, если CSP что-то блокирует.
+- **apiUrl** принимается только по HTTPS и только на домене GREEN-API — токен идёт прямо в URL, по HTTP или «не туда» его отправлять нельзя.
+- **Зависимости.** CI запускает `npm audit`, Dependabot раз в неделю предлагает обновления.
 
 ## Тесты
 
@@ -136,7 +140,7 @@ npx playwright install chromium && npm run test:e2e
 
 GitHub Actions:
 
-- **`ci.yml`** — на push в `dev` и на каждый PR. Параллельно: Prettier, ESLint, steiger, `tsc`, сверка `api:gen` со спекой · Vitest · Playwright · сборка.
+- **`ci.yml`** — на push в `dev` и на каждый PR. Параллельно: `npm audit`, Prettier, ESLint, steiger, `tsc`, сверка `api:gen` со спекой · Vitest с порогом покрытия 100% · Playwright · сборка.
 - **`deploy.yml`** — на push в `main`. Тот же CI, затем демо-сборка уезжает на GitHub Pages.
 
 ## Git flow

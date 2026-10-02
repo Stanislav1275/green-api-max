@@ -59,6 +59,17 @@ describe('US-1: вход по данным GREEN-API', () => {
     expect(screen.getByLabelText('apiUrl')).toHaveAttribute('aria-invalid', 'true')
   })
 
+  it.each(['http://api.green-api.com/v3', 'https://evil.example/green-api.com'])(
+    'TC-1.14: apiUrl «%s» не принимается — токен уходит только в GREEN-API по HTTPS',
+    async (apiUrl) => {
+      const { user, fillSignIn } = renderApp()
+      await fillSignIn({ ...TEST_CREDENTIALS, apiUrl })
+      await user.click(screen.getByRole('button', { name: 'Войти' }))
+
+      expect(await screen.findByText('Укажите apiUrl из личного кабинета')).toBeInTheDocument()
+    },
+  )
+
   it('TC-1.3: idInstance с буквами не принимается', async () => {
     const { user, fillSignIn } = renderApp()
     await fillSignIn({ ...TEST_CREDENTIALS, idInstance: '31abc' })
