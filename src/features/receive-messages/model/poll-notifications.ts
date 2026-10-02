@@ -30,7 +30,6 @@ export const pollNotifications = async ({
 }: PollOptions) => {
   let failures = 0
   let lastReceiptId: number | null = null
-  // a function, not a property read: TS would narrow `signal.aborted` to `false` inside the loop
   const isAborted = () => signal.aborted
 
   const pause = async (error: unknown) => {

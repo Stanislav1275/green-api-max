@@ -14,12 +14,10 @@ export const MessengerPage = () => {
 
   return (
     <main className="grid h-full md:grid-cols-[22rem_1fr]">
-      {/* like web.max.ru: the open chat names the tab */}
       <Seo
         title={activeChat ? getChatTitle(activeChat, t) : t('seo.messenger.title')}
         description={t('seo.messenger.description')}
       />
-      {/* on phones the list and the chat take turns, like in the MAX mobile web */}
       <ChatSidebar className={cn(hasActiveChat && 'max-md:hidden')} />
       <ChatWindow className={cn(!hasActiveChat && 'max-md:hidden')} />
     </main>
