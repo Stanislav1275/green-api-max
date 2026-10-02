@@ -5,7 +5,9 @@ import { Avatar } from './avatar'
 import { Button, buttonVariants } from './button'
 import { Card } from './card'
 import { Field } from './field'
+import { FormMessage } from './form'
 import { Input } from './input'
+import { Seo } from './seo'
 import { toast, ToastProvider } from './toast'
 
 describe('ui-kit', () => {
@@ -82,5 +84,21 @@ describe('ui-kit', () => {
     // each toast is also mirrored into an aria-live region, hence *All*
     expect(await screen.findAllByText('Сохранено')).not.toHaveLength(0)
     expect(await screen.findAllByText('Сломалось')).not.toHaveLength(0)
+  })
+
+  it('FormMessage renders non-text children as is', () => {
+    render(
+      <Field.Root invalid>
+        <FormMessage>
+          <b>Ошибка</b>
+        </FormMessage>
+      </Field.Root>,
+    )
+    expect(screen.getByText('Ошибка').tagName).toBe('B')
+  })
+
+  it('Seo falls back to the app name without a page title', () => {
+    render(<Seo description="Чат" />)
+    expect(document.title).toBe('MAX × GREEN-API')
   })
 })

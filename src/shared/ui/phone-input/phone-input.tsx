@@ -56,6 +56,7 @@ export const PhoneInput = ({
           items={COUNTRIES}
           value={country}
           onValueChange={(next) => {
+            /* v8 ignore else -- null comes only from Combobox.Clear, which is not rendered */
             if (next) {
               setSelected(next)
               onChange(composePhone(next, national))

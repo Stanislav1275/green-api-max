@@ -170,4 +170,11 @@ describe('US-1: вход по данным GREEN-API', () => {
       expect(screen.getByRole('heading', { name: 'Чаты' })).toBeInTheDocument()
     })
   })
+
+  it('TC-1.13: «Где взять данные» открывает подсказку', async () => {
+    const { user } = renderApp()
+    await user.click(screen.getByRole('button', { name: 'Где взять данные' }))
+
+    expect(await screen.findByRole('dialog', { name: 'Где взять данные' })).toBeInTheDocument()
+  })
 })
